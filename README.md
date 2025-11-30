@@ -26,8 +26,4 @@ pip install -r requirements.txt
 
 ## 🔥 3. Run the Flask Application
 
-export FLASK_APP=customer_area.py
-
-export FLASK_ENV=development
-
-flask run
+./run_server.sh
