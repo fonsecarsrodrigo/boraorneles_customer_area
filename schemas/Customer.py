@@ -2,9 +2,13 @@ from pydantic import BaseModel
 from typing import Optional, List
 from database_model import Customer
 from typing import Optional
-from datetime import date
+from datetime import datetime, date
 from pydantic import BaseModel
 
+
+class CustomerKeySchema(BaseModel):
+    """Defines how a new Customer should be represented"""
+    customer_key: int
 
 class CustomerSchema(BaseModel):
     """Defines how a new Customer should be represented"""
@@ -20,7 +24,7 @@ class CustomerViewSchema(BaseModel):
     customer_key = int
     date_of_birth = date
     e_mail = str
-    customer_since = date
+    customer_since = datetime
     home_adress = str
 
 def show_customer_view(customer: Customer):
