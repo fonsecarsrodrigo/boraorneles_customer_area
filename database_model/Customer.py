@@ -8,7 +8,7 @@ class Customer(Base):
     __tablename__ = 'customer'
     full_name = Column(String)
     customer_key = Column(Integer, primary_key=True, autoincrement=True)
-    date_of_birth = Column(String)
+    date_of_birth = Column(Date, default=date.min)
     e_mail = Column(Integer)
     customer_since = Column(Date, default=date.today)
     home_adress = Column(String)
@@ -16,7 +16,7 @@ class Customer(Base):
     def __init__(
         self,
         full_name: str,
-        date_of_birth: str,
+        date_of_birth: date,
         e_mail: int,
         home_adress: str,
         customer_since: Union[Date, None] = None,
