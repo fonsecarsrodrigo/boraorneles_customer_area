@@ -27,6 +27,16 @@ class CustomerViewSchema(BaseModel):
     customer_since = datetime
     home_adress = str
 
+class CustomerSummarySchema(BaseModel):
+    """Defines how a customer summary should be represented"""
+    customer_key: int
+    full_name: str
+
+
+class CustomersListSchema(BaseModel):
+    """Defines how a list of customer summaries should be returned"""
+    customers: List[CustomerSummarySchema]
+
 def show_customer_view(customer: Customer):
     """Returns a customer view representation
     """
@@ -37,4 +47,14 @@ def show_customer_view(customer: Customer):
         "e_mail": customer.e_mail,
         "customer_since": customer.customer_since.isoformat(),
         "home_adress": customer.home_adress,
+    }
+
+
+def show_customers_list(customers: List[Customer]):
+    """Returns a list representation of customer summaries"""
+    return {
+        "customers": [
+            {"customer_key": customer.customer_key, "full_name": customer.full_name}
+            for customer in customers
+        ]
     }

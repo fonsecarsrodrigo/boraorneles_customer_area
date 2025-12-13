@@ -11,6 +11,7 @@ import os
 # Need to import models to ensure they are added do DB
 from database_model.base import Base
 from database_model.Customer import Customer
+from database_model.TravelPlan import TravelPlan
 
 db_path = "database/"
 # Check if the directory does not exist
