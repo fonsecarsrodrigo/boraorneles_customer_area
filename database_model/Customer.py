@@ -10,7 +10,7 @@ class Customer(Base):
     customer_key = Column(Integer, primary_key=True, autoincrement=True)
     date_of_birth = Column(String)
     e_mail = Column(Integer)
-    customer_since = Column(String)
+    customer_since = Column(Date, default=date.today)
     home_adress = Column(String)
 
     def __init__(
@@ -19,7 +19,7 @@ class Customer(Base):
         date_of_birth: str,
         e_mail: int,
         home_adress: str,
-        customer_since: Union[str, None] = None,
+        customer_since: Union[Date, None] = None,
     ):
         """
         Creates a Customer
