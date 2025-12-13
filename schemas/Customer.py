@@ -3,13 +3,14 @@ from typing import Optional, List
 from database_model import Customer
 from typing import Optional
 from datetime import date
+from pydantic import BaseModel
+
 
 class CustomerSchema(BaseModel):
     """Defines how a new Customer should be represented"""
     full_name: str
     date_of_birth: date
     e_mail: str
-    customer_since: Optional[date] = None
     home_adress: Optional[str] = None
 
 class CustomerViewSchema(BaseModel):

@@ -30,8 +30,7 @@ def add_customer(form: CustomerSchema):
         full_name=form.full_name,
         date_of_birth=form.date_of_birth,
         e_mail=form.e_mail,
-        home_adress=form.home_adress,
-        customer_since=form.customer_since
+        home_adress=form.home_adress
         )
 
     # criando conexão com a base

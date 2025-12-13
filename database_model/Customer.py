@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Date
-from datetime import date
+from sqlalchemy import Column, Integer, String, Date, DateTime
+from datetime import date, datetime
 from typing import Union
+from pydantic import Field
 
 from database_model.base import Base
 
@@ -10,7 +11,7 @@ class Customer(Base):
     customer_key = Column(Integer, primary_key=True, autoincrement=True)
     date_of_birth = Column(Date, default=date.min)
     e_mail = Column(Integer)
-    customer_since = Column(Date, default=date.today)
+    customer_since = Column(DateTime)
     home_adress = Column(String)
 
     def __init__(
@@ -19,7 +20,7 @@ class Customer(Base):
         date_of_birth: date,
         e_mail: int,
         home_adress: str,
-        customer_since: Union[Date, None] = None,
+        customer_since: Union[date, None] = None,
     ):
         """
         Creates a Customer
@@ -39,3 +40,5 @@ class Customer(Base):
         # if not provided, it will default to today's date
         if customer_since:
             self.customer_since = customer_since
+        else:
+            self.customer_since = datetime.now()
