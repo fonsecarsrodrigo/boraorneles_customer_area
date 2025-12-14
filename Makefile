@@ -3,7 +3,7 @@
 run :
 	@export FLASK_APP=customer_area.py && \
 	export FLASK_ENV=development && \
-	flask run
+	flask run &
 
 clear:
 	@pkill -f flask || true
