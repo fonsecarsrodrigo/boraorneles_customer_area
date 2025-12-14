@@ -23,8 +23,6 @@ from schemas.TravelPlan import (
 from schemas.error import ErrorSchema
 from sqlalchemy.exc import NoResultFound
 
-
-
 info = Info(title="Bora Orneles Customer Area API", version="1.0.0")
 app = OpenAPI(__name__, info=info)
 
@@ -35,6 +33,10 @@ travel_plan_tag = Tag(name="TravelPlan", description="Add travel plan to databas
 @app.route("/")
 def home():
      return redirect('/openapi')
+
+# ------------------------------------------------------------
+# Customer Routes
+# ------------------------------------------------------------
 
 @app.post('/add_customer',
           tags=[customer_tag],
@@ -69,6 +71,36 @@ def get_customers():
     customers = session.query(Customer).all()
 
     return show_customers_list(customers), 200
+
+@app.get('/get_customer',
+    tags=[customer_tag],
+    responses={"200": CustomerViewSchema, "404": ErrorSchema}
+)
+def get_customer(query: CustomerKeySchema):
+    """Get a customer by ID."""
+
+    session = Session()
+
+    customer_key = query.customer_key
+
+    try:
+        customer = session.query(Customer).filter(
+            Customer.customer_key == customer_key).first()
+        if customer is None:
+            return {
+                "message": "Customer not found"
+            }, 404
+    except NoResultFound:
+        return {
+            "message": "Customer not found"
+        }, 404
+
+    return show_customer_view(customer), 200
+
+
+# ------------------------------------------------------------
+# Travel Plan Routes
+# ------------------------------------------------------------
 
 @app.post('/add_travel_plan',
           tags=[travel_plan_tag],
@@ -121,31 +153,6 @@ def get_travel_plan(query: TravelPlanKeySchema):
         return {"message": "Travel plan not found"}, 404
 
     return show_travel_plan_view(travel_plan), 200
-
-@app.get('/get_customer',
-    tags=[customer_tag],
-    responses={"200": CustomerViewSchema, "404": ErrorSchema}
-)
-def get_customer(query: CustomerKeySchema):
-    """Get a customer by ID."""
-
-    session = Session()
-
-    customer_key = query.customer_key
-
-    try:
-        customer = session.query(Customer).filter(
-            Customer.customer_key == customer_key).first()
-        if customer is None:
-            return {
-                "message": "Customer not found"
-            }, 404
-    except NoResultFound:
-        return {
-            "message": "Customer not found"
-        }, 404
-
-    return show_customer_view(customer), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
