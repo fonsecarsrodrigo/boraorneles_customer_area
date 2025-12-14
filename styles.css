@@ -1,0 +1,32 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.full-width-image {
+    width: 100%;
+    display: block;
+}
+
+#CustomersTable {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+#CustomersTable th,
+#CustomersTable td {
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+#CustomersTable tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#CustomersTable th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
