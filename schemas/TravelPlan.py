@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import date
 
 from database_model import TravelPlan
@@ -33,6 +33,11 @@ class TravelPlanViewSchema(BaseModel):
     customer_id = int
 
 
+class TravelPlansListSchema(BaseModel):
+    """Defines how a list of TravelPlans should be returned"""
+    travel_plans: List[TravelPlanViewSchema]
+
+
 def show_travel_plan_view(travel_plan: TravelPlan):
     """Returns a travel plan view representation"""
     return {
@@ -43,4 +48,11 @@ def show_travel_plan_view(travel_plan: TravelPlan):
         "origin": travel_plan.origin,
         "travel_plan_key": travel_plan.travel_plan_key,
         "customer_id": travel_plan.customer_id,
+    }
+
+
+def show_travel_plans_list(travel_plans: List[TravelPlan]):
+    """Returns a list representation for travel plans"""
+    return {
+        "travel_plans": [show_travel_plan_view(travel_plan) for travel_plan in travel_plans]
     }

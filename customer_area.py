@@ -18,7 +18,9 @@ from schemas.TravelPlan import (
     TravelPlanSchema,
     TravelPlanViewSchema,
     TravelPlanKeySchema,
+    TravelPlansListSchema,
     show_travel_plan_view,
+    show_travel_plans_list,
 )
 from schemas.error import ErrorSchema
 from sqlalchemy.exc import NoResultFound
@@ -105,6 +107,20 @@ def get_customer(query: CustomerKeySchema):
 # ------------------------------------------------------------
 # Travel Plan Routes
 # ------------------------------------------------------------
+
+
+@app.get(
+    "/get_travel_plans",
+    tags=[travel_plan_tag],
+    responses={"200": TravelPlansListSchema},
+)
+def get_travel_plans():
+    """Get all travel plans."""
+
+    session = Session()
+    travel_plans = session.query(TravelPlan).all()
+
+    return show_travel_plans_list(travel_plans), 200
 
 
 @app.post(
