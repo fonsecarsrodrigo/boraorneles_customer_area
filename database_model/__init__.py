@@ -5,7 +5,7 @@
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-import os
+from pathlib import Path
 
 # importing the elements defined in the model
 # Need to import models to ensure they are added do DB
@@ -13,14 +13,13 @@ from database_model.base import Base
 from database_model.Customer import Customer
 from database_model.TravelPlan import TravelPlan
 
-db_path = "database/"
-# Check if the directory does not exist
-if not os.path.exists(db_path):
-   # then create the directory
-   os.makedirs(db_path)
+ROOT_DIR = Path(__file__).resolve().parent.parent
+db_path = ROOT_DIR / "database"
+# Ensure the database directory exists
+db_path.mkdir(parents=True, exist_ok=True)
 
 # database access URL (this is a local SQLite access URL)
-db_url = 'sqlite:///%s/db.sqlite3' % db_path
+db_url = f"sqlite:///{(db_path / 'db.sqlite3').as_posix()}"
 
 # create the database connection engine
 engine = create_engine(db_url, echo=False)

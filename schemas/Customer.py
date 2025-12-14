@@ -16,6 +16,7 @@ class CustomerSchema(BaseModel):
     date_of_birth: date
     e_mail: str
     home_adress: Optional[str] = None
+    social_number: str
 
 class CustomerViewSchema(BaseModel):
     """ Define how a new Customer should be returned
@@ -26,6 +27,7 @@ class CustomerViewSchema(BaseModel):
     e_mail = str
     customer_since = datetime
     home_adress = str
+    social_number = str
 
 class CustomerSummarySchema(BaseModel):
     """Defines how a customer summary should be represented"""
@@ -47,6 +49,7 @@ def show_customer_view(customer: Customer):
         "e_mail": customer.e_mail,
         "customer_since": customer.customer_since.isoformat(),
         "home_adress": customer.home_adress,
+        "social_number": customer.social_number,
     }
 
 

@@ -13,6 +13,7 @@ class Customer(Base):
     e_mail = Column(Integer)
     customer_since = Column(DateTime)
     home_adress = Column(String)
+    social_number = Column(String)
 
     def __init__(
         self,
@@ -21,6 +22,7 @@ class Customer(Base):
         e_mail: int,
         home_adress: str,
         customer_since: Union[date, None] = None,
+        social_number: str = "",
     ):
         """
         Creates a Customer
@@ -31,11 +33,13 @@ class Customer(Base):
             e_mail: customer's email (as defined in the SQL schema)
             customer_since: date since when the customer has been registered
             home_adress: customer's home address
+            social_number: document that uniquely identifies the customer
         """
         self.full_name = full_name
         self.date_of_birth = date_of_birth
         self.e_mail = e_mail
         self.home_adress = home_adress
+        self.social_number = social_number
 
         # if not provided, it will default to today's date
         if customer_since:

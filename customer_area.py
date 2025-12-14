@@ -46,7 +46,8 @@ def add_customer(form: CustomerSchema):
         full_name=form.full_name,
         date_of_birth=form.date_of_birth,
         e_mail=form.e_mail,
-        home_adress=form.home_adress
+        home_adress=form.home_adress,
+        social_number=form.social_number,
         )
 
     # criando conexão com a base
@@ -56,7 +57,6 @@ def add_customer(form: CustomerSchema):
     # efetivando o camando de adição de novo item na tabela
     session.commit()
     return show_customer_view(customer), 200
-
 
 @app.get('/get_customers',
          tags=[customer_tag],
