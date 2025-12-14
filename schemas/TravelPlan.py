@@ -19,6 +19,7 @@ class TravelPlanSchema(BaseModel):
     travel_purpose: str
     destination: str
     origin: str
+    customer_id: int
 
 
 class TravelPlanViewSchema(BaseModel):
@@ -29,6 +30,7 @@ class TravelPlanViewSchema(BaseModel):
     destination = str
     origin = str
     travel_plan_key = int
+    customer_id = int
 
 
 def show_travel_plan_view(travel_plan: TravelPlan):
@@ -40,4 +42,5 @@ def show_travel_plan_view(travel_plan: TravelPlan):
         "destination": travel_plan.destination,
         "origin": travel_plan.origin,
         "travel_plan_key": travel_plan.travel_plan_key,
+        "customer_id": travel_plan.customer_id,
     }

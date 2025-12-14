@@ -15,6 +15,7 @@ class TravelPlan(Base):
     travel_purpose = Column(String)
     destination = Column(String)
     origin = Column(String)
+    customer_id = Column(Integer, nullable=False)
 
     def __init__(
         self,
@@ -23,6 +24,7 @@ class TravelPlan(Base):
         travel_purpose: str,
         destination: str,
         origin: str,
+        customer_id: int,
         travel_plan_key: Optional[int] = None,
     ):
         self.start_date = start_date
@@ -30,5 +32,6 @@ class TravelPlan(Base):
         self.travel_purpose = travel_purpose
         self.destination = destination
         self.origin = origin
+        self.customer_id = customer_id
         if travel_plan_key is not None:
             self.travel_plan_key = travel_plan_key

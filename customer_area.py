@@ -76,16 +76,28 @@ def get_customers():
 def add_travel_plan(form: TravelPlanSchema):
     """Add a new travel plan to the database."""
 
+    session = Session()
+    customer = session.query(Customer).filter(
+        Customer.customer_key == form.customer_id
+    ).first()
+
+    if customer is None:
+        return {"message": "Customer not found"}, 404
+
     travel_plan = TravelPlan(
         start_date=form.start_date,
         end_date=form.end_date,
         travel_purpose=form.travel_purpose,
         destination=form.destination,
         origin=form.origin,
+        customer_id=form.customer_id,
     )
 
-    session = Session()
     session.add(travel_plan)
+    session.flush()
+    session.refresh(travel_plan)
+
+    customer.travel_plan_id = travel_plan.travel_plan_key
     session.commit()
 
     return show_travel_plan_view(travel_plan), 200
