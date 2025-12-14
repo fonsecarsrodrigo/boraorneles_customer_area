@@ -48,6 +48,7 @@ def add_customer(form: CustomerSchema):
         e_mail=form.e_mail,
         home_adress=form.home_adress,
         social_number=form.social_number,
+        travel_plan_id=form.travel_plan_id,
         )
 
     # criando conexão com a base

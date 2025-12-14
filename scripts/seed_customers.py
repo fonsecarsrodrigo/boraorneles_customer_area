@@ -20,6 +20,7 @@ CUSTOMERS_DATA = [
         "e_mail": "ana.souza@example.com",
         "home_adress": "Rua das Mangueiras, 123",
         "social_number": "SN-0001",
+        "travel_plan_id": None,
     },
     {
         "full_name": "Bruno Machado",
@@ -27,6 +28,7 @@ CUSTOMERS_DATA = [
         "e_mail": "bruno.machado@example.com",
         "home_adress": "Avenida Brasil, 456",
         "social_number": "SN-0002",
+        "travel_plan_id": None,
     },
     {
         "full_name": "Carla Menezes",
@@ -34,6 +36,7 @@ CUSTOMERS_DATA = [
         "e_mail": "carla.menezes@example.com",
         "home_adress": "Rua Ipe Roxo, 789",
         "social_number": "SN-0003",
+        "travel_plan_id": None,
     },
     {
         "full_name": "Daniel Oliveira",
@@ -41,6 +44,7 @@ CUSTOMERS_DATA = [
         "e_mail": "daniel.oliveira@example.com",
         "home_adress": "Rua das Palmeiras, 321",
         "social_number": "SN-0004",
+        "travel_plan_id": None,
     },
     {
         "full_name": "Eduarda Campos",
@@ -48,6 +52,7 @@ CUSTOMERS_DATA = [
         "e_mail": "eduarda.campos@example.com",
         "home_adress": "Rua das Flores, 654",
         "social_number": "SN-0005",
+        "travel_plan_id": None,
     },
     {
         "full_name": "Felipe Araujo",
@@ -55,6 +60,7 @@ CUSTOMERS_DATA = [
         "e_mail": "felipe.araujo@example.com",
         "home_adress": "Rua do Sol, 987",
         "social_number": "SN-0006",
+        "travel_plan_id": None,
     },
     {
         "full_name": "Gabriela Lima",
@@ -62,6 +68,7 @@ CUSTOMERS_DATA = [
         "e_mail": "gabriela.lima@example.com",
         "home_adress": "Rua da Paz, 258",
         "social_number": "SN-0007",
+        "travel_plan_id": None,
     },
     {
         "full_name": "Henrique Borges",
@@ -69,6 +76,7 @@ CUSTOMERS_DATA = [
         "e_mail": "henrique.borges@example.com",
         "home_adress": "Rua das Laranjeiras, 369",
         "social_number": "SN-0008",
+        "travel_plan_id": None,
     },
     {
         "full_name": "Isabela Nunes",
@@ -76,6 +84,7 @@ CUSTOMERS_DATA = [
         "e_mail": "isabela.nunes@example.com",
         "home_adress": "Avenida Atlantica, 147",
         "social_number": "SN-0009",
+        "travel_plan_id": None,
     },
     {
         "full_name": "Joao Pedro Carvalho",
@@ -83,6 +92,7 @@ CUSTOMERS_DATA = [
         "e_mail": "joao.carvalho@example.com",
         "home_adress": "Rua Santa Clara, 753",
         "social_number": "SN-0010",
+        "travel_plan_id": None,
     },
 ]
 

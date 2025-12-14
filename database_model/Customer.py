@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Date, DateTime
 from datetime import date, datetime
-from typing import Union
+from typing import Optional, Union
 from pydantic import Field
 
 from database_model.base import Base
@@ -14,6 +14,7 @@ class Customer(Base):
     customer_since = Column(DateTime)
     home_adress = Column(String)
     social_number = Column(String)
+    travel_plan_id = Column(Integer, nullable=True)
 
     def __init__(
         self,
@@ -23,6 +24,7 @@ class Customer(Base):
         home_adress: str,
         customer_since: Union[date, None] = None,
         social_number: str = "",
+        travel_plan_id: Union[int, None] = None,
     ):
         """
         Creates a Customer
@@ -34,12 +36,14 @@ class Customer(Base):
             customer_since: date since when the customer has been registered
             home_adress: customer's home address
             social_number: document that uniquely identifies the customer
+            travel_plan_id: optional FK to an existing travel plan
         """
         self.full_name = full_name
         self.date_of_birth = date_of_birth
         self.e_mail = e_mail
         self.home_adress = home_adress
         self.social_number = social_number
+        self.travel_plan_id = travel_plan_id
 
         # if not provided, it will default to today's date
         if customer_since:
