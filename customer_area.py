@@ -6,6 +6,8 @@ from database_model.Customer import Customer
 from database_model.TravelPlan import TravelPlan
 from database_model import Session
 
+from flask_cors import CORS
+
 from schemas.Customer import (
     CustomerViewSchema,
     CustomerSchema,
@@ -27,6 +29,7 @@ from sqlalchemy.exc import NoResultFound
 
 info = Info(title="Bora Orneles Customer Area API", version="1.0.0")
 app = OpenAPI(__name__, info=info)
+CORS(app)
 
 customer_tag = Tag(name="Customer", description="Add customer to database")
 customer_key = Tag(name="CustomerKey", description="Get customer from database key")

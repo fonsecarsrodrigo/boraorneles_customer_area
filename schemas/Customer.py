@@ -35,6 +35,7 @@ class CustomerSummarySchema(BaseModel):
     """Defines how a customer summary should be represented"""
     customer_key: int
     full_name: str
+    date_of_birth: date
 
 
 class CustomersListSchema(BaseModel):
@@ -60,7 +61,11 @@ def show_customers_list(customers: List[Customer]):
     """Returns a list representation of customer summaries"""
     return {
         "customers": [
-            {"customer_key": customer.customer_key, "full_name": customer.full_name}
+            {
+                "customer_key": customer.customer_key,
+                "full_name": customer.full_name,
+                "date_of_birth": customer.date_of_birth.isoformat(),
+            }
             for customer in customers
         ]
     }

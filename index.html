@@ -23,8 +23,43 @@
         class="full-width-image"
     >
 
-    <!-- Table of Customers -->
-    <section class="items">
+    <details class="CustomersRegisterSection" open>
+        <summary>Cadastro Clientes</summary>
+        <form id="customerForm">
+            <label>
+                Nome Completo *
+                <input type="text" name="full_name" required>
+            </label>
+
+            <label>
+                CPF *
+                <input type="text" name="social_number" required>
+            </label>
+
+            <label>
+                Data de Nascimento *
+                <input type="date" name="date_of_birth" required>
+            </label>
+
+            <br>
+            <br>
+
+            <label>
+                Email *
+                <input type="email" name="e_mail" required>
+            </label>
+
+            <label>
+                Endereço Residencial
+                <input type="text" name="home_adress">
+            </label>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+    </details>
+
+    <details class="CustomersSection" open>
+        <summary>Clientes</summary>
         <table id="CustomersTable">
             <tr>
                 <th>Customer ID</th>
@@ -32,8 +67,20 @@
                 <th>Date of Birth</th>
             </tr>
         </table>
-    </section>
+    </details>
 
+    <details class="TravelPlansSection" open>
+        <summary>Travel Plans</summary>
+        <table id="TravelPlansTable">
+            <tr>
+                <th>Customer ID</th>
+                <th>Full Name</th>
+                <th>Destination</th>
+                <th>Start Date</th>
+            </tr>
+        </table>
+    </details>
 
+    <script src="scripts.js"></script>
 </body>
 </html>

@@ -30,3 +30,29 @@ body {
     background-color: #f0f0f0;
     font-weight: bold;
 }
+
+#TravelPlansTable {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+#TravelPlansTable th,
+#TravelPlansTable td {
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    text-align: left;
+}
+#TravelPlansTable tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+#TravelPlansTable th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+details {
+  padding: 10px;
+  background-color: #b967ff;
+  border-radius: 5px;
+}
