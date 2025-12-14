@@ -1,4 +1,4 @@
-"""Utility to add a predefined set of customers to the database."""
+"""Utility to seed travel plans and customers into the local database."""
 
 from datetime import date
 from pathlib import Path
@@ -9,8 +9,53 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from database_model import Session
-from database_model.Customer import Customer
+from database_model import Session  # noqa: E402
+from database_model.Customer import Customer  # noqa: E402
+from database_model.TravelPlan import TravelPlan  # noqa: E402
+
+
+TRAVEL_PLANS = [
+    {
+        "start_date": date(2025, 2, 26),
+        "end_date": date(2025, 3, 5),
+        "travel_purpose": "Carnaval vacation",
+        "destination": "Rio de Janeiro",
+        "origin": "Sao Paulo",
+        "customer_id": 1,
+    },
+    {
+        "start_date": date(2025, 1, 15),
+        "end_date": date(2025, 1, 25),
+        "travel_purpose": "Beach retreat",
+        "destination": "Florianopolis",
+        "origin": "Curitiba",
+        "customer_id": 3,
+    },
+    {
+        "start_date": date(2025, 7, 10),
+        "end_date": date(2025, 7, 18),
+        "travel_purpose": "Festival visit",
+        "destination": "Salvador",
+        "origin": "Recife",
+        "customer_id": 5,
+    },
+    {
+        "start_date": date(2025, 5, 5),
+        "end_date": date(2025, 5, 15),
+        "travel_purpose": "Eco tour",
+        "destination": "Manaus",
+        "origin": "Belem",
+        "customer_id": 7,
+    },
+    {
+        "start_date": date(2025, 9, 2),
+        "end_date": date(2025, 9, 6),
+        "travel_purpose": "Business meetings",
+        "destination": "Porto Alegre",
+        "origin": "Brasilia",
+        "customer_id": 9,
+    },
+]
 
 
 CUSTOMERS_DATA = [
@@ -20,7 +65,7 @@ CUSTOMERS_DATA = [
         "e_mail": "ana.souza@example.com",
         "home_adress": "Rua das Mangueiras, 123",
         "social_number": "SN-0001",
-        "travel_plan_id": None,
+        "travel_plan_id": 0,
     },
     {
         "full_name": "Bruno Machado",
@@ -97,20 +142,50 @@ CUSTOMERS_DATA = [
 ]
 
 
-def seed_customers():
-    """Create static customers inside a single transaction."""
+def seed_database():
+    """Create travel plans and customers inside a single transaction."""
     session = Session()
     try:
+        travel_plan_objects = [
+            TravelPlan(
+                start_date=plan["start_date"],
+                end_date=plan["end_date"],
+                travel_purpose=plan["travel_purpose"],
+                destination=plan["destination"],
+                origin=plan["origin"],
+                customer_id=plan["customer_id"],
+            )
+            for plan in TRAVEL_PLANS
+        ]
+        session.add_all(travel_plan_objects)
+        session.flush()
+
+        travel_plan_map = {
+            index: plan.travel_plan_key
+            for index, plan in enumerate(travel_plan_objects)
+        }
+
         for data in CUSTOMERS_DATA:
-            session.add(Customer(**data))
+            payload = data.copy()
+            plan_index = payload.pop("travel_plan_id", None)
+            payload["travel_plan_id"] = (
+                travel_plan_map.get(plan_index)
+                if plan_index is not None
+                else None
+            )
+            session.add(Customer(**payload))
+
         session.commit()
-        print(f"Inserted {len(CUSTOMERS_DATA)} customers.")
+        print(
+            f"Inserted {len(travel_plan_objects)} travel plans and "
+            f"{len(CUSTOMERS_DATA)} customers."
+        )
     except Exception as exc:
         session.rollback()
-        raise RuntimeError("Failed to seed customers") from exc
+        raise RuntimeError("Failed to seed travel plans and customers") from exc
     finally:
         session.close()
 
 
 if __name__ == "__main__":
-    seed_customers()
+    seed_database()
