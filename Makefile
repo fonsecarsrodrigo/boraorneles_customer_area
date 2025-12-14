@@ -1,6 +1,6 @@
-.PHONY: run server clear
+.PHONY: run clear seed
 
-run server:
+run :
 	@export FLASK_APP=customer_area.py && \
 	export FLASK_ENV=development && \
 	flask run
@@ -8,3 +8,6 @@ run server:
 clear:
 	@pkill -f flask || true
 	@rm -rf database
+
+seed:
+	@python3 scripts/seed_database.py
