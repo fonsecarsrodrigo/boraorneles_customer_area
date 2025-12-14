@@ -21,7 +21,7 @@ TRAVEL_PLANS = [
         "travel_purpose": "Carnaval vacation",
         "destination": "Rio de Janeiro",
         "origin": "Sao Paulo",
-        "customer_id": 1,
+        "target_customer_index": 1,
     },
     {
         "start_date": date(2025, 1, 15),
@@ -29,7 +29,7 @@ TRAVEL_PLANS = [
         "travel_purpose": "Beach retreat",
         "destination": "Florianopolis",
         "origin": "Curitiba",
-        "customer_id": 3,
+        "target_customer_index": 3,
     },
     {
         "start_date": date(2025, 7, 10),
@@ -37,7 +37,7 @@ TRAVEL_PLANS = [
         "travel_purpose": "Festival visit",
         "destination": "Salvador",
         "origin": "Recife",
-        "customer_id": 5,
+        "target_customer_index": 5,
     },
     {
         "start_date": date(2025, 5, 5),
@@ -45,7 +45,7 @@ TRAVEL_PLANS = [
         "travel_purpose": "Eco tour",
         "destination": "Manaus",
         "origin": "Belem",
-        "customer_id": 7,
+        "target_customer_index": 7,
     },
     {
         "start_date": date(2025, 9, 2),
@@ -53,7 +53,7 @@ TRAVEL_PLANS = [
         "travel_purpose": "Business meetings",
         "destination": "Porto Alegre",
         "origin": "Brasilia",
-        "customer_id": 9,
+        "target_customer_index": 9,
     },
 ]
 
@@ -65,7 +65,7 @@ CUSTOMERS_DATA = [
         "e_mail": "ana.souza@example.com",
         "home_adress": "Rua das Mangueiras, 123",
         "social_number": "SN-0001",
-        "travel_plan_id": 0,
+        "travel_plan_id": None,
     },
     {
         "full_name": "Bruno Machado",
@@ -146,38 +146,43 @@ def seed_database():
     """Create travel plans and customers inside a single transaction."""
     session = Session()
     try:
-        travel_plan_objects = [
-            TravelPlan(
+        customers = {}
+        for idx, data in enumerate(CUSTOMERS_DATA, start=1):
+            payload = data.copy()
+            customer = Customer(**payload)
+            session.add(customer)
+            session.flush()
+            customers[idx] = customer.customer_key
+
+        travel_plan_entries = []
+        for plan in TRAVEL_PLANS:
+            target_index = plan["target_customer_index"]
+            customer_key = customers.get(target_index)
+            if not customer_key:
+                raise ValueError(
+                    f"No customer seeded for travel plan target index {target_index}"
+                )
+            travel_plan = TravelPlan(
                 start_date=plan["start_date"],
                 end_date=plan["end_date"],
                 travel_purpose=plan["travel_purpose"],
                 destination=plan["destination"],
                 origin=plan["origin"],
-                customer_id=plan["customer_id"],
+                customer_id=customer_key,
             )
-            for plan in TRAVEL_PLANS
-        ]
-        session.add_all(travel_plan_objects)
-        session.flush()
+            session.add(travel_plan)
+            session.flush()
+            travel_plan_entries.append((customer_key, travel_plan.travel_plan_key))
 
-        travel_plan_map = {
-            index: plan.travel_plan_key
-            for index, plan in enumerate(travel_plan_objects)
-        }
-
-        for data in CUSTOMERS_DATA:
-            payload = data.copy()
-            plan_index = payload.pop("travel_plan_id", None)
-            payload["travel_plan_id"] = (
-                travel_plan_map.get(plan_index)
-                if plan_index is not None
-                else None
-            )
-            session.add(Customer(**payload))
+        for customer_key, travel_plan_key in travel_plan_entries:
+            session.query(Customer).filter(
+                Customer.customer_key == customer_key
+            ).update({"travel_plan_id": travel_plan_key})
 
         session.commit()
         print(
-            f"Inserted {len(travel_plan_objects)} travel plans and "
+            f"Inserted {len(travel_plan_entries)} travel plans and "
+
             f"{len(CUSTOMERS_DATA)} customers."
         )
     except Exception as exc:
