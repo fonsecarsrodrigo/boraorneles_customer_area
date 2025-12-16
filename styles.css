@@ -19,8 +19,19 @@ body {
 #CustomersTable td {
     border: 1px solid #ddd;
     padding: 0.75rem;
+    text-align: center;
+}
+
+#CustomersTable td:nth-child(2) {   
     text-align: left;
 }
+#CustomersTable td:nth-child(5) {   
+    text-align: left;
+}
+#CustomersTable td:nth-child(6) {   
+    text-align: left;
+}
+
 
 #CustomersTable tr:nth-child(even) {
     background-color: #f9f9f9;
@@ -49,10 +60,21 @@ body {
 #TravelPlansTable th {
     background-color: #f0f0f0;
     font-weight: bold;
+    text-align: center;
 }
+
 
 details {
   padding: 10px;
   background-color: #b967ff;
   border-radius: 5px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
 }

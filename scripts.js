@@ -1,6 +1,6 @@
 const API_BASE_URL = 'http://127.0.0.1:5000';
 
-const insertCustomerRow = ({ customer_key, full_name, date_of_birth }) => {
+const insertCustomerRow = ({ customer_key, full_name, social_number, date_of_birth, e_mail, home_adress, travel_plan_id }) => {
   const table = document.getElementById('CustomersTable');
   if (!table) {
     return;
@@ -8,9 +8,13 @@ const insertCustomerRow = ({ customer_key, full_name, date_of_birth }) => {
   const row = table.insertRow(-1);
   row.insertCell(0).textContent = customer_key ?? '';
   row.insertCell(1).textContent = full_name ?? '';
-  row.insertCell(2).textContent = date_of_birth
-    ? new Date(date_of_birth).toLocaleDateString()
-    : '';
+  row.insertCell(2).textContent = social_number ?? '';
+  row.insertCell(3).textContent = date_of_birth
+  row.insertCell(4).textContent = e_mail ?? '';
+  row.insertCell(5).textContent = home_adress ?? '';
+  row.insertCell(6).textContent = travel_plan_id ?? '';
+  const icon  = row.insertCell(7);
+  icon.innerHTML = '<img class="icon" src="images/trash-can.png" alt="Delete">'
 };
 
 async function insertTravelPlanRow ({ customer_id, destination, start_date }) {

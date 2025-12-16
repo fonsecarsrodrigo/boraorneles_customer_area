@@ -61,11 +61,7 @@ def show_customers_list(customers: List[Customer]):
     """Returns a list representation of customer summaries"""
     return {
         "customers": [
-            {
-                "customer_key": customer.customer_key,
-                "full_name": customer.full_name,
-                "date_of_birth": customer.date_of_birth.isoformat(),
-            }
+            {key: value for key, value in show_customer_view(customer).items()}
             for customer in customers
         ]
     }
