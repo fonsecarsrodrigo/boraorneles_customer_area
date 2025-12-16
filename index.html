@@ -71,14 +71,56 @@
         </table>
     </details>
 
+        <details class="TravelPlansRegisterSection" open>
+        <summary>Cadastro de Viagens</summary>
+        <form id="travelPlanForm">
+            <label>
+                Customer ID *
+                <input type="text" name="customer_id" required>
+            </label>
+
+            <label>
+                Origin *
+                <input type="text" name="origin" required>
+            </label>
+
+            <label>
+                Destination *
+                <input type="text" name="destination" required>
+            </label>
+
+            <label>
+                Start Date *
+                <input type="date" name="start_date" required>
+            </label>
+
+            <label>
+                End Date *
+                <input type="date" name="end_date" required>
+            </label>
+
+            <label>
+                Travel Purpose *
+                <input type="text" name="travel_purpose" required>
+            </label>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+    </details>
+
     <details class="TravelPlansSection" open>
         <summary>Travel Plans</summary>
         <table id="TravelPlansTable">
             <tr>
+                <th>Travel Plan ID</th>
                 <th>Customer ID</th>
                 <th>Full Name</th>
+                <th>Origin</th>
                 <th>Destination</th>
                 <th>Start Date</th>
+                <th>End Date</th>
+                <th>Travel Purpose</th>
+                <th>Actions</th>
             </tr>
         </table>
     </details>

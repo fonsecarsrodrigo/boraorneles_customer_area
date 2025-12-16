@@ -24,7 +24,7 @@ from schemas.TravelPlan import (
     show_travel_plan_view,
     show_travel_plans_list,
 )
-from schemas.error import ErrorSchema
+from schemas.error import ErrorSchema, OKSchema
 from sqlalchemy.exc import NoResultFound
 
 info = Info(title="Bora Orneles Customer Area API", version="1.0.0")
@@ -187,6 +187,45 @@ def get_travel_plan(query: TravelPlanKeySchema):
 
     return show_travel_plan_view(travel_plan), 200
 
+@app.delete(
+    "/delete_customer",
+    tags=[customer_tag],
+    responses={"200" : OKSchema, "404": ErrorSchema},
+)
+def delete_customer(query: CustomerKeySchema):
+    """Delete a customer by ID."""
+
+    session = Session()
+    customer_key = query.customer_key
+
+    customer = session.query(Customer).filter(Customer.customer_key == customer_key).first()
+    if customer is None:
+        return {"message": "Customer not found"}, 404
+
+    session.delete(customer)
+    session.commit()
+
+    return {"message": "Customer deleted successfully"}, 200
+
+@app.delete(
+    "/delete_travel_plan",
+    tags=[travel_plan_tag],
+    responses={"200": OKSchema, "404": ErrorSchema},
+)
+def delete_travel_plan(query: TravelPlanKeySchema):
+    """Delete a travel plan by key."""
+
+    session = Session()
+    travel_plan_key = query.travel_plan_key
+
+    travel_plan = session.query(TravelPlan).filter(TravelPlan.travel_plan_key == travel_plan_key).first()
+    if travel_plan is None:
+        return {"message": "Travel plan not found"}, 404
+
+    session.delete(travel_plan)
+    session.commit()
+
+    return {"message": "Travel plan deleted successfully"}, 200
 
 if __name__ == "__main__":
     app.run(debug=True)

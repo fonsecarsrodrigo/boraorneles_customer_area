@@ -41,6 +41,7 @@ class TravelPlansListSchema(BaseModel):
 def show_travel_plan_view(travel_plan: TravelPlan):
     """Returns a travel plan view representation"""
     return {
+        "travel_plan_key": travel_plan.travel_plan_key,
         "start_date": travel_plan.start_date.isoformat(),
         "end_date": travel_plan.end_date.isoformat(),
         "travel_purpose": travel_plan.travel_purpose,
