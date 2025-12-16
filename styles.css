@@ -22,16 +22,15 @@ body {
     text-align: center;
 }
 
-#CustomersTable td:nth-child(2) {   
+#CustomersTable td:nth-child(2) {
     text-align: left;
 }
-#CustomersTable td:nth-child(5) {   
+#CustomersTable td:nth-child(5) {
     text-align: left;
 }
-#CustomersTable td:nth-child(6) {   
+#CustomersTable td:nth-child(6) {
     text-align: left;
 }
-
 
 #CustomersTable tr:nth-child(even) {
     background-color: #f9f9f9;
