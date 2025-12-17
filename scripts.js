@@ -20,7 +20,6 @@ const insertCustomerRow = ({ customer_key, full_name, social_number, date_of_bir
   Customer_delete_btn.className = 'icon';
   Customer_delete_btn.addEventListener('click', () => {
     deleteTravelPlan(travel_plan_id);
-    deleteCustomer(customer_key);
   });
   Customer_delete_cell.appendChild(Customer_delete_btn);
 };

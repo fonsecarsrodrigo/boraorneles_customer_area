@@ -222,7 +222,9 @@ def delete_travel_plan(query: TravelPlanKeySchema):
     if travel_plan is None:
         return {"message": "Travel plan not found"}, 404
 
+    customer = session.query(Customer).filter(Customer.customer_key == travel_plan.customer_id).first()
     session.delete(travel_plan)
+    session.delete(customer)
     session.commit()
 
     return {"message": "Travel plan deleted successfully"}, 200
