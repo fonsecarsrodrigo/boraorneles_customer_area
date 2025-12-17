@@ -184,6 +184,7 @@ const addCustomer = (event) => {
     })
     .then((data) => {
       console.info('ROUTE: add_customer response ok', data)
+      location.reload();
     })
     .catch((error) => {
       console.error('ROUTE: add_customer failed with error:', error);
@@ -215,6 +216,7 @@ const addTravelPlan = (event) => {
     })
     .then((data) => {
       console.info('ROUTE: add_travel_plan response ok', data)
+      location.reload();
     })
     .catch((error) => {
       console.error('ROUTE: add_travel_plan failed with error:', error);
@@ -231,8 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (TP_form) {
     TP_form.addEventListener('submit', addTravelPlan);
   }
-
   showCustomers();
   showTravelPlans();
-
 });

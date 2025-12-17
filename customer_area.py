@@ -5,6 +5,8 @@ from flask_openapi3 import OpenAPI, Info, Tag
 from database_model.Customer import Customer
 from database_model.TravelPlan import TravelPlan
 from database_model import Session
+from logger import logger
+
 
 from flask_cors import CORS
 
@@ -53,6 +55,7 @@ def home():
 )
 def add_customer(form: CustomerSchema):
     """Add a new customer to the database."""
+
     customer = Customer(
         full_name=form.full_name,
         date_of_birth=form.date_of_birth,
@@ -61,6 +64,8 @@ def add_customer(form: CustomerSchema):
         social_number=form.social_number,
         travel_plan_id=form.travel_plan_id,
     )
+
+    logger.debug(f"Coletando produtos ")
 
     # criando conexão com a base
     session = Session()
@@ -202,6 +207,9 @@ def delete_customer(query: CustomerKeySchema):
     if customer is None:
         return {"message": "Customer not found"}, 404
 
+    travel_plan = session.query(TravelPlan).filter(TravelPlan.travel_plan_key == customer.travel_plan_id).first()
+    session.delete(travel_plan)
+
     session.delete(customer)
     session.commit()
 
@@ -224,7 +232,7 @@ def delete_travel_plan(query: TravelPlanKeySchema):
 
     customer = session.query(Customer).filter(Customer.customer_key == travel_plan.customer_id).first()
     session.delete(travel_plan)
-    session.delete(customer)
+    customer.travel_plan_id = None
     session.commit()
 
     return {"message": "Travel plan deleted successfully"}, 200
