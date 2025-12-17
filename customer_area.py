@@ -208,7 +208,8 @@ def delete_customer(query: CustomerKeySchema):
         return {"message": "Customer not found"}, 404
 
     travel_plan = session.query(TravelPlan).filter(TravelPlan.travel_plan_key == customer.travel_plan_id).first()
-    session.delete(travel_plan)
+    if travel_plan is not None:
+        session.delete(travel_plan)
 
     session.delete(customer)
     session.commit()

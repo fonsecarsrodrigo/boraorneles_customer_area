@@ -80,37 +80,41 @@
         <details class="TravelPlansRegisterSection" open>
         <summary>Cadastro de Viagens</summary>
         <form id="travelPlanForm">
-            <label>
-                Customer ID *
-                <input type="text" name="customer_id" required>
-            </label>
+            <div class="div-3-columns">
+            <div>
+                <label>
+                    Numero de Cadastro de Cliente *
+                    <input type="text" name="customer_id" required>
+                </label>
 
-            <label>
-                Origin *
-                <input type="text" name="origin" required>
-            </label>
+                <label>
+                    Origem *
+                    <input type="text" name="origin" required>
+                </label>
 
-            <label>
-                Destination *
-                <input type="text" name="destination" required>
-            </label>
+                <label>
+                    Destino *
+                    <input type="text" name="destination" required>
+                </label>
 
-            <label>
-                Start Date *
-                <input type="date" name="start_date" required>
-            </label>
+                <label>
+                    Data Início *
+                    <input type="date" name="start_date" required>
+                </label>
 
-            <label>
-                End Date *
-                <input type="date" name="end_date" required>
-            </label>
+                <label>
+                    Data Fim *
+                    <input type="date" name="end_date" required>
+                </label>
+            </div>
+            <div>
+                <label>
+                    Propósito da Viagem *
+                    <input type="text" name="travel_purpose" required>
+                </label>
 
-            <label>
-                Travel Purpose *
-                <input type="text" name="travel_purpose" required>
-            </label>
-
-            <button type="submit">Cadastrar</button>
+                <button type="submit">Cadastrar</button>
+            </div>
         </form>
     </details>
 
