@@ -26,32 +26,38 @@
     <details class="CustomersRegisterSection" open>
         <summary>Cadastro Clientes</summary>
         <form id="customerForm">
-            <label>
-                Nome Completo *
-                <input type="text" name="full_name" required>
-            </label>
+        <div class="div-3-columns">
+            <div>
+                <label>
+                    Nome Completo *
+                    <input type="text" name="full_name" required>
+                </label>
 
-            <label>
-                CPF *
-                <input type="text" name="social_number" required>
-            </label>
+                <label>
+                    CPF *
+                    <input type="text" name="cpf" required>
+                </label>
 
-            <label>
-                Data de Nascimento *
-                <input type="date" name="date_of_birth" required>
-            </label>
+                <label>
+                    Data de Nascimento *
+                    <input type="date" name="date_of_birth" required>
+                </label>
 
-            <label>
-                Email *
-                <input type="email" name="e_mail" required>
-            </label>
+                <label>
+                    Email *
+                    <input type="email" name="e_mail" required>
+                </label>
 
-            <label>
-                Endereço Residencial
-                <input type="text" name="home_adress">
-            </label>
+                <label>
+                    Endereço Residencial
+                    <input type="text" name="home_adress">
+                </label>
+            </div>
 
-            <button type="submit">Cadastrar</button>
+            <div>
+                 <button type="submit">Cadastrar</button>
+            </div>
+
         </form>
     </details>
 
@@ -59,14 +65,14 @@
         <summary>Clientes</summary>
         <table id="CustomersTable">
             <tr>
-                <th>Customer ID</th>
-                <th>Full Name</th>
+                <th>Numero de Cadastro</th>
+                <th>Nome Completo </th>
                 <th>CPF</th>
-                <th>Date of Birth</th>
+                <th>Data de Nascimento</th>
                 <th>Email</th>
                 <th>Endereço</th>
-                <th>Travel Plan</th>
-                <th>Actions</th>
+                <th>Identificador Plano de Viagem</th>
+                <th>Acao</th>
             </tr>
         </table>
     </details>

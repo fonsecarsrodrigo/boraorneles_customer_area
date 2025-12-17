@@ -41,6 +41,10 @@ body {
     font-weight: bold;
 }
 
+
+
+
+
 #TravelPlansTable {
     border-collapse: collapse;
     width: 100%;
@@ -51,7 +55,7 @@ body {
 #TravelPlansTable td {
     border: 1px solid #ddd;
     padding: 0.75rem;
-    text-align: left;
+    text-align: center;
 }
 #TravelPlansTable tr:nth-child(even) {
     background-color: #f9f9f9;
@@ -62,11 +66,37 @@ body {
     text-align: center;
 }
 
+#TravelPlansTable td:nth-child(3) {
+    text-align: left;
+}
+#TravelPlansTable td:nth-child(4) {
+    text-align: left;
+}
+#TravelPlansTable td:nth-child(5) {
+    text-align: left;
+}
+#TravelPlansTable td:nth-child(5) {
+    text-align: left;
+}
 
 details {
+  summary {
+    font-weight: bold;
+    font-size: 1.2em;
+    font-family: "Impact", fantasy;
+    color: #ffffff;
+  }
+  margin: 24px 0;
   padding: 10px;
   background-color: #b967ff;
   border-radius: 5px;
+  line-height: 2.6;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
 .cursor-pointer {
