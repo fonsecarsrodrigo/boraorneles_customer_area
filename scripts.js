@@ -1,5 +1,7 @@
+// Base URL for all backend requests
 const API_BASE_URL = 'http://127.0.0.1:5000';
 
+// Add a single customer row in the table
 const insertCustomerRow = ({ customer_key, full_name, social_number, date_of_birth, e_mail, home_adress, travel_plan_id }) => {
   const table = document.getElementById('CustomersTable');
   if (!table) {
@@ -24,6 +26,7 @@ const insertCustomerRow = ({ customer_key, full_name, social_number, date_of_bir
   Customer_delete_cell.appendChild(Customer_delete_btn);
 };
 
+// Add a single travel plan row in the table
 async function insertTravelPlanRow ({ travel_plan_key, customer_id, origin, destination, start_date, end_date, travel_purpose }) {
   const table = document.getElementById('TravelPlansTable');
   if (!table) {
@@ -69,6 +72,7 @@ async function insertTravelPlanRow ({ travel_plan_key, customer_id, origin, dest
   }
 };
 
+// Delete a travel plan and refresh the list
 const deleteTravelPlan = (travel_plan_key) => {
   const url = `${API_BASE_URL}/delete_travel_plan?travel_plan_key=${travel_plan_key}`;
   fetch(url, {
@@ -91,6 +95,7 @@ const deleteTravelPlan = (travel_plan_key) => {
     });
 }
 
+// Delete a customer and refresh the list
 const deleteCustomer = (customer_key) => {
   const url = `${API_BASE_URL}/delete_customer?customer_key=${customer_key}`;
   fetch(url, {
@@ -113,6 +118,7 @@ const deleteCustomer = (customer_key) => {
     });
 };
 
+// Display all customers
 const showCustomers = () => {
   const url = `${API_BASE_URL}/get_customers`;
   fetch(url, { method: 'get' })
@@ -136,6 +142,7 @@ const showCustomers = () => {
     });
 };
 
+// Display all travel plans
 const showTravelPlans = () => {
   const url = `${API_BASE_URL}/get_travel_plans`;
   fetch(url, { method: 'get' })
@@ -159,6 +166,7 @@ const showTravelPlans = () => {
     });
 };
 
+// Handle new customer form submission
 const addCustomer = (event) => {
   event.preventDefault();
   const form = event.target;
@@ -191,6 +199,7 @@ const addCustomer = (event) => {
     });
 };
 
+// Handle new travel plan form submission
 const addTravelPlan = (event) => {
   event.preventDefault();
   const form = event.target;
@@ -223,6 +232,7 @@ const addTravelPlan = (event) => {
     });
 };
 
+// Wire up forms and fetch initial data when the page loads
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('customerForm');
   if (form) {
