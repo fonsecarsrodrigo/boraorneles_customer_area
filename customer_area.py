@@ -7,7 +7,6 @@ from database_model.TravelPlan import TravelPlan
 from database_model import Session
 from logger import logger
 
-
 from flask_cors import CORS
 
 from schemas.Customer import (
@@ -37,17 +36,13 @@ customer_tag = Tag(name="Customer", description="Add customer to database")
 customer_key = Tag(name="CustomerKey", description="Get customer from database key")
 travel_plan_tag = Tag(name="TravelPlan", description="Add travel plan to database")
 
-
 @app.route("/")
 def home():
     return redirect("/openapi")
 
-
 # ------------------------------------------------------------
 # Customer Routes
 # ------------------------------------------------------------
-
-
 @app.post(
     "/add_customer",
     tags=[customer_tag],
@@ -75,7 +70,6 @@ def add_customer(form: CustomerSchema):
     session.commit()
     return show_customer_view(customer), 200
 
-
 @app.get("/get_customers", tags=[customer_tag], responses={"200": CustomersListSchema})
 def get_customers():
     """Get all customers with their identifiers and names."""
@@ -84,7 +78,6 @@ def get_customers():
     customers = session.query(Customer).all()
 
     return show_customers_list(customers), 200
-
 
 @app.get(
     "/get_customer",
@@ -115,8 +108,6 @@ def get_customer(query: CustomerKeySchema):
 # ------------------------------------------------------------
 # Travel Plan Routes
 # ------------------------------------------------------------
-
-
 @app.get(
     "/get_travel_plans",
     tags=[travel_plan_tag],
@@ -129,7 +120,6 @@ def get_travel_plans():
     travel_plans = session.query(TravelPlan).all()
 
     return show_travel_plans_list(travel_plans), 200
-
 
 @app.post(
     "/add_travel_plan",
@@ -166,7 +156,6 @@ def add_travel_plan(form: TravelPlanSchema):
     session.commit()
 
     return show_travel_plan_view(travel_plan), 200
-
 
 @app.get(
     "/get_travel_plan",
