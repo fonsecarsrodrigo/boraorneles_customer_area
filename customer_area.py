@@ -48,62 +48,68 @@ def home():
 @app.post(
     "/add_customer",
     tags=[customer_tag],
-    responses={"200": CustomerViewSchema, "409": ErrorSchema, "400": ErrorSchema},
+    responses={"200": CustomerViewSchema, "400": ErrorSchema},
 )
 def add_customer(form: CustomerSchema):
     """Add a new customer to the database."""
-
-    customer = Customer(
-        full_name=form.full_name,
-        date_of_birth=form.date_of_birth,
-        e_mail=form.e_mail,
-        home_adress=form.home_adress,
-        social_number=form.social_number,
-        travel_plan_id=form.travel_plan_id,
-    )
     session = Session()
-    session.add(customer)
-    session.commit()
+    try:
+        customer = Customer(
+            full_name=form.full_name,
+            date_of_birth=form.date_of_birth,
+            e_mail=form.e_mail,
+            home_adress=form.home_adress,
+            social_number=form.social_number,
+            travel_plan_id=form.travel_plan_id,
+        )
+        session.add(customer)
+        session.commit()
+        session.refresh(customer)
+    except Exception as e:
+        session.rollback()
+        return {"message": "Failed to Add Customer to Database"}, 400
+
     return show_customer_view(customer), 200
 
-@app.get("/get_customers", tags=[customer_tag], responses={"200": CustomersListSchema})
+@app.get("/get_customers", tags=[customer_tag], responses={"200": CustomersListSchema, "400": ErrorSchema})
 def get_customers():
     """Get all customers with their identifiers and names."""
 
-    session = Session()
-    customers = session.query(Customer).all()
+    try:
+        session = Session()
+        customers = session.query(Customer).all()
+    except Exception as e:
+        return {"message": "Failed to retrieve customers from database"}, 400
 
     return show_customers_list(customers), 200
 
 @app.get(
     "/get_customer",
     tags=[customer_tag],
-    responses={"200": CustomerViewSchema, "404": ErrorSchema},
+    responses={"200": CustomerViewSchema, "400": ErrorSchema},
 )
 def get_customer(query: CustomerKeySchema):
     """Get a customer by ID."""
 
     session = Session()
 
-    customer_key = query.customer_key
-
     try:
         customer = (
             session.query(Customer)
-            .filter(Customer.customer_key == customer_key)
+            .filter(Customer.customer_key == query.customer_key)
             .first()
         )
         if customer is None:
-            return {"message": "Customer not found"}, 404
+            return {"message": "Customer not found"}, 400
     except NoResultFound:
-        return {"message": "Customer not found"}, 404
+        return {"message": "Customer not found"}, 400
 
     return show_customer_view(customer), 200
 
 @app.delete(
     "/delete_customer",
     tags=[customer_tag],
-    responses={"200" : OKSchema, "404": ErrorSchema},
+    responses={"200" : OKSchema, "400": ErrorSchema},
 )
 def delete_customer(query: CustomerKeySchema):
     """Delete a Customer by ID."""
@@ -113,14 +119,20 @@ def delete_customer(query: CustomerKeySchema):
 
     customer = session.query(Customer).filter(Customer.customer_key == customer_key).first()
     if customer is None:
-        return {"message": "Customer not found"}, 404
+        return {"message": "Customer not found"}, 400
 
     travel_plan = session.query(TravelPlan).filter(TravelPlan.travel_plan_key == customer.travel_plan_id).first()
     if travel_plan is not None:
         session.delete(travel_plan)
+    else:
+        return {"message": "Travel plan not found"}, 400
 
-    session.delete(customer)
-    session.commit()
+    try:
+        session.delete(customer)
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        return {"message": "Failed to delete customer from database"}, 400
 
     return {"message": "Customer deleted successfully"}, 200
 
@@ -130,7 +142,7 @@ def delete_customer(query: CustomerKeySchema):
 @app.post(
     "/add_travel_plan",
     tags=[travel_plan_tag],
-    responses={"200": TravelPlanViewSchema, "409": ErrorSchema, "400": ErrorSchema},
+    responses={"200": TravelPlanViewSchema, "400": ErrorSchema},
 )
 def add_travel_plan(form: TravelPlanSchema):
     """Add a new travel plan to the database."""
@@ -143,43 +155,50 @@ def add_travel_plan(form: TravelPlanSchema):
     )
 
     if customer is None:
-        return {"message": "Customer not found"}, 404
+        return {"message": "Customer not found"}, 400
 
-    travel_plan = TravelPlan(
-        start_date=form.start_date,
-        end_date=form.end_date,
-        travel_purpose=form.travel_purpose,
-        destination=form.destination,
-        origin=form.origin,
-        customer_id=form.customer_id,
-    )
+    try:
+        travel_plan = TravelPlan(
+            start_date=form.start_date,
+            end_date=form.end_date,
+            travel_purpose=form.travel_purpose,
+            destination=form.destination,
+            origin=form.origin,
+            customer_id=form.customer_id,
+        )
 
-    session.add(travel_plan)
-    session.flush()
-    session.refresh(travel_plan)
+        session.add(travel_plan)
+        session.flush()
+        session.refresh(travel_plan)
 
-    customer.travel_plan_id = travel_plan.travel_plan_key
-    session.commit()
+        customer.travel_plan_id = travel_plan.travel_plan_key
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        return {"message": "Failed to Add Travel Plan to Database"}, 400
 
     return show_travel_plan_view(travel_plan), 200
 
 @app.get(
     "/get_travel_plans",
     tags=[travel_plan_tag],
-    responses={"200": TravelPlansListSchema},
+    responses={"200": TravelPlansListSchema, "400": ErrorSchema},
 )
 def get_travel_plans():
     """Get all travel plans."""
 
     session = Session()
-    travel_plans = session.query(TravelPlan).all()
+    try:
+        travel_plans = session.query(TravelPlan).all()
+    except Exception as e:
+        return {"message": "Failed to retrieve travel plans from database"}, 400
 
     return show_travel_plans_list(travel_plans), 200
 
 @app.get(
     "/get_travel_plan",
     tags=[travel_plan_tag],
-    responses={"200": TravelPlanViewSchema, "404": ErrorSchema},
+    responses={"200": TravelPlanViewSchema, "400": ErrorSchema},
 )
 def get_travel_plan(query: TravelPlanKeySchema):
     """Get a Travel Plan by key."""
@@ -194,16 +213,16 @@ def get_travel_plan(query: TravelPlanKeySchema):
             .first()
         )
         if travel_plan is None:
-            return {"message": "Travel plan not found"}, 404
+            return {"message": "Travel plan not found"}, 400
     except NoResultFound:
-        return {"message": "Travel plan not found"}, 404
+        return {"message": "Travel plan not found"}, 400
 
     return show_travel_plan_view(travel_plan), 200
 
 @app.delete(
     "/delete_travel_plan",
     tags=[travel_plan_tag],
-    responses={"200": OKSchema, "404": ErrorSchema},
+    responses={"200": OKSchema, "400": ErrorSchema},
 )
 def delete_travel_plan(query: TravelPlanKeySchema):
     """Delete a travel plan by key."""
@@ -213,12 +232,19 @@ def delete_travel_plan(query: TravelPlanKeySchema):
 
     travel_plan = session.query(TravelPlan).filter(TravelPlan.travel_plan_key == travel_plan_key).first()
     if travel_plan is None:
-        return {"message": "Travel plan not found"}, 404
+        return {"message": "Travel plan not found"}, 400
 
     customer = session.query(Customer).filter(Customer.customer_key == travel_plan.customer_id).first()
-    session.delete(travel_plan)
-    customer.travel_plan_id = None
-    session.commit()
+    if customer is None:
+        return {"message": "Associated customer not found"}, 400
+
+    try:
+        session.delete(travel_plan)
+        customer.travel_plan_id = None
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        return {"message": "Failed to delete travel plan from database"}, 400
 
     return {"message": "Travel plan deleted successfully"}, 200
 
