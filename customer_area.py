@@ -121,11 +121,12 @@ def delete_customer(query: CustomerKeySchema):
     if customer is None:
         return {"message": "Customer not found"}, 400
 
-    travel_plan = session.query(TravelPlan).filter(TravelPlan.travel_plan_key == customer.travel_plan_id).first()
-    if travel_plan is not None:
-        session.delete(travel_plan)
-    else:
-        return {"message": "Travel plan not found"}, 400
+    if customer.travel_plan_id is not None:
+        travel_plan = session.query(TravelPlan).filter(TravelPlan.travel_plan_key == customer.travel_plan_id).first()
+        if travel_plan is not None:
+            session.delete(travel_plan)
+        else:
+            return {"message": "Travel plan not found"}, 400
 
     try:
         session.delete(customer)

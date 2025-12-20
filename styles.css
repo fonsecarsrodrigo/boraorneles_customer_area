@@ -1,14 +1,17 @@
+/* Basic page typography and spacing */
 body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
 }
 
+/* Images full */
 .full-width-image {
     width: 100%;
     display: block;
 }
 
+/* Customer table layout */
 #CustomersTable {
     border-collapse: collapse;
     width: 100%;
@@ -41,6 +44,7 @@ body {
     font-weight: bold;
 }
 
+/* Travel plans table layout */
 #TravelPlansTable {
     border-collapse: collapse;
     width: 100%;
@@ -75,6 +79,7 @@ body {
     text-align: left;
 }
 
+/* Details */
 details {
   summary {
     font-weight: bold;
@@ -89,16 +94,19 @@ details {
   line-height: 2.6;
 }
 
+/* Three-column grid for forms */
 .grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
 
+/* Shared cursor utility */
 .cursor-pointer {
     cursor: pointer;
 }
 
+/* Icon sizing */
 .icon {
     width: 24px;
     height: 24px;
