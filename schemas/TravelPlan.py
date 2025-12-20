@@ -1,9 +1,8 @@
-from pydantic import BaseModel
-from typing import Optional, List
 from datetime import date
+from pydantic import BaseModel
+from typing import List
 
 from database_model import TravelPlan
-
 
 class TravelPlanKeySchema(BaseModel):
     """Defines how a TravelPlan key should be represented"""
@@ -47,7 +46,6 @@ def show_travel_plan_view(travel_plan: TravelPlan):
         "travel_purpose": travel_plan.travel_purpose,
         "destination": travel_plan.destination,
         "origin": travel_plan.origin,
-        "travel_plan_key": travel_plan.travel_plan_key,
         "customer_id": travel_plan.customer_id,
     }
 

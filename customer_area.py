@@ -1,11 +1,9 @@
-from flask import Flask
 from flask import redirect
 from flask_openapi3 import OpenAPI, Info, Tag
 
 from database_model.Customer import Customer
 from database_model.TravelPlan import TravelPlan
 from database_model import Session
-from logger import logger
 
 from flask_cors import CORS
 
@@ -28,14 +26,18 @@ from schemas.TravelPlan import (
 from schemas.error import ErrorSchema, OKSchema
 from sqlalchemy.exc import NoResultFound
 
+# Create OPENAPI Info metadata for Swagger UI
 info = Info(title="Bora Orneles Customer Area API", version="1.0.0")
+# Create OpenAPI creates a Flask app and
+# then adds OpenAPI capabilities on top of it.
 app = OpenAPI(__name__, info=info)
 CORS(app)
 
-customer_tag = Tag(name="Customer", description="Add customer to database")
-customer_key = Tag(name="CustomerKey", description="Get customer from database key")
-travel_plan_tag = Tag(name="TravelPlan", description="Add travel plan to database")
+#Defines tags used to group endpoints in the API documentation.
+customer_tag = Tag(name="Customer", description="Customer related database API calls")
+travel_plan_tag = Tag(name="TravelPlan", description="TravelPlan related database API calls")
 
+# Route for the home page that redirects to the OpenAPI documentation.
 @app.route("/")
 def home():
     return redirect("/openapi")
@@ -59,14 +61,8 @@ def add_customer(form: CustomerSchema):
         social_number=form.social_number,
         travel_plan_id=form.travel_plan_id,
     )
-
-    logger.debug(f"Coletando produtos ")
-
-    # criando conexão com a base
     session = Session()
-    # adicionando produto
     session.add(customer)
-    # efetivando o camando de adição de novo item na tabela
     session.commit()
     return show_customer_view(customer), 200
 
@@ -104,23 +100,33 @@ def get_customer(query: CustomerKeySchema):
 
     return show_customer_view(customer), 200
 
+@app.delete(
+    "/delete_customer",
+    tags=[customer_tag],
+    responses={"200" : OKSchema, "404": ErrorSchema},
+)
+def delete_customer(query: CustomerKeySchema):
+    """Delete a Customer by ID."""
+
+    session = Session()
+    customer_key = query.customer_key
+
+    customer = session.query(Customer).filter(Customer.customer_key == customer_key).first()
+    if customer is None:
+        return {"message": "Customer not found"}, 404
+
+    travel_plan = session.query(TravelPlan).filter(TravelPlan.travel_plan_key == customer.travel_plan_id).first()
+    if travel_plan is not None:
+        session.delete(travel_plan)
+
+    session.delete(customer)
+    session.commit()
+
+    return {"message": "Customer deleted successfully"}, 200
 
 # ------------------------------------------------------------
 # Travel Plan Routes
 # ------------------------------------------------------------
-@app.get(
-    "/get_travel_plans",
-    tags=[travel_plan_tag],
-    responses={"200": TravelPlansListSchema},
-)
-def get_travel_plans():
-    """Get all travel plans."""
-
-    session = Session()
-    travel_plans = session.query(TravelPlan).all()
-
-    return show_travel_plans_list(travel_plans), 200
-
 @app.post(
     "/add_travel_plan",
     tags=[travel_plan_tag],
@@ -158,12 +164,25 @@ def add_travel_plan(form: TravelPlanSchema):
     return show_travel_plan_view(travel_plan), 200
 
 @app.get(
+    "/get_travel_plans",
+    tags=[travel_plan_tag],
+    responses={"200": TravelPlansListSchema},
+)
+def get_travel_plans():
+    """Get all travel plans."""
+
+    session = Session()
+    travel_plans = session.query(TravelPlan).all()
+
+    return show_travel_plans_list(travel_plans), 200
+
+@app.get(
     "/get_travel_plan",
     tags=[travel_plan_tag],
     responses={"200": TravelPlanViewSchema, "404": ErrorSchema},
 )
 def get_travel_plan(query: TravelPlanKeySchema):
-    """Retrieve a travel plan by key."""
+    """Get a Travel Plan by key."""
 
     session = Session()
     travel_plan_key = query.travel_plan_key
@@ -180,30 +199,6 @@ def get_travel_plan(query: TravelPlanKeySchema):
         return {"message": "Travel plan not found"}, 404
 
     return show_travel_plan_view(travel_plan), 200
-
-@app.delete(
-    "/delete_customer",
-    tags=[customer_tag],
-    responses={"200" : OKSchema, "404": ErrorSchema},
-)
-def delete_customer(query: CustomerKeySchema):
-    """Delete a customer by ID."""
-
-    session = Session()
-    customer_key = query.customer_key
-
-    customer = session.query(Customer).filter(Customer.customer_key == customer_key).first()
-    if customer is None:
-        return {"message": "Customer not found"}, 404
-
-    travel_plan = session.query(TravelPlan).filter(TravelPlan.travel_plan_key == customer.travel_plan_id).first()
-    if travel_plan is not None:
-        session.delete(travel_plan)
-
-    session.delete(customer)
-    session.commit()
-
-    return {"message": "Customer deleted successfully"}, 200
 
 @app.delete(
     "/delete_travel_plan",
@@ -227,5 +222,6 @@ def delete_travel_plan(query: TravelPlanKeySchema):
 
     return {"message": "Travel plan deleted successfully"}, 200
 
+# Run the Flask App
 if __name__ == "__main__":
     app.run(debug=True)

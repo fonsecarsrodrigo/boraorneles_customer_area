@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Date, DateTime
 from datetime import date, datetime
-from typing import Optional, Union
-from pydantic import Field
+from typing import Union
 
 from database_model.base import Base
 

@@ -1,10 +1,7 @@
-from pydantic import BaseModel
-from typing import Optional, List
 from database_model import Customer
-from typing import Optional
 from datetime import datetime, date
 from pydantic import BaseModel
-
+from typing import Optional, List
 
 class CustomerKeySchema(BaseModel):
     """Defines how a new Customer should be represented"""
