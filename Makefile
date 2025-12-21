@@ -11,3 +11,6 @@ clear:
 
 seed:
 	@python3 scripts/seed_database.py
+
+ruff:
+	@ruff check .
