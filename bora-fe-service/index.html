@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bora Orneles</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Top Cover Image -->
+    <img
+        src="images/bora_orneles_cover.webp"
+        alt="Cover Image"
+        class="full-width-image"
+    >
+
+    <!-- Second Image -->
+    <img
+        src="images/bora_orneles_services.png"
+        alt="Services"
+        class="full-width-image"
+    >
+
+    <!-- Customer Registration Session -->
+    <details class="CustomersRegisterSection" open>
+        <summary>Cadastro Clientes</summary>
+        <form id="customerForm">
+        <div class="div-3-columns">
+            <div>
+                <label>
+                    Nome Completo *
+                    <input type="text" name="full_name" required>
+                </label>
+
+                <label>
+                    CPF *
+                    <input type="text" name="social_number" required>
+                </label>
+
+                <label>
+                    Data de Nascimento *
+                    <input type="date" name="date_of_birth" required>
+                </label>
+
+                <label>
+                    Email *
+                    <input type="email" name="e_mail" required>
+                </label>
+            </div>
+            <div class="div-3-columns">
+                <label>
+                    Endereço Residencial *
+                    <input type="text" name="home_cep" placeholder="CEP" maxlength="9" required>
+                    <input type="text" name="home_street" placeholder="Rua" required>
+                    <input type="text" name="home_number" placeholder="Número" required>
+                    <input type="text" name="home_city" placeholder="Cidade" required>
+                    <input type="text" name="home_state" placeholder="Estado (UF)" required maxlength="2">
+                </label>
+            </div>
+
+            <div>
+                 <button type="submit">Cadastrar</button>
+            </div>
+
+        </form>
+    </details>
+
+    <!-- Customer Visualization Session -->
+    <details class="CustomersSection" open>
+        <summary>Clientes</summary>
+        <table id="CustomersTable">
+            <tr>
+                <th>Número de Cadastro</th>
+                <th>Nome Completo</th>
+                <th>CPF</th>
+                <th>Data de Nascimento</th>
+                <th>Email</th>
+                <th>CEP</th>
+                <th>Rua</th>
+                <th>Número</th>
+                <th>Cidade</th>
+                <th>Estado</th>
+                <th>Identificador Plano de Viagem</th>
+                <th>Ação</th>
+            </tr>
+        </table>
+    </details>
+
+    <!-- Travel Plan Registration Session -->
+    <details class="TravelPlansRegisterSection" open>
+        <summary>Cadastro de Viagens</summary>
+        <form id="travelPlanForm">
+            <div class="div-3-columns">
+            <div>
+                <label>
+                    Numero de Cadastro de Cliente *
+                    <input type="text" name="customer_id" required>
+                </label>
+
+                <label>
+                    Origem *
+                    <input type="text" name="origin" required>
+                </label>
+
+                <label>
+                    Destino *
+                    <input type="text" name="destination" required>
+                </label>
+
+                <label>
+                    Data Início *
+                    <input type="date" name="start_date" required>
+                </label>
+
+                <label>
+                    Data Fim *
+                    <input type="date" name="end_date" required>
+                </label>
+            </div>
+            <div>
+                <label>
+                    Propósito da Viagem *
+                    <input type="text" name="travel_purpose" required>
+                </label>
+
+                <button type="submit">Cadastrar</button>
+            </div>
+        </form>
+    </details>
+
+    <!-- Travel Plans Visualization Session -->
+    <details class="TravelPlansSection" open>
+        <summary>Travel Plans</summary>
+        <table id="TravelPlansTable">
+            <tr>
+                <th>Identificador de Viagem</th>
+                <th>Numero de Cadastro de Cliente</th>
+                <th>Nome Completo</th>
+                <th>Origem</th>
+                <th>Destino</th>
+                <th>Data Início</th>
+                <th>Data Fim</th>
+                <th>Propósito da Viagem</th>
+                <th>Ações</th>
+            </tr>
+        </table>
+    </details>
+
+    <!-- Page Business Logic Implementation -->
+    <script src="scripts.js"></script>
+</body>
+</html>
