@@ -2,15 +2,15 @@
 
 # Frontend (nginx): build image, then run with host port 8080 -> container 80
 docker-fe-build:
-	docker build -f fe.docker -t bora-fe .
+	docker build -f bora-fe.docker -t bora-fe .
 
 docker-fe-run:
-	docker run --rm -p 8080:80 bora-fe
+	docker run --rm -p 8080:80 -p 5001:5001 bora-fe
 
 run :
 	@export FLASK_APP=customer_area.py && \
 	export FLASK_ENV=development && \
-	flask run &
+	flask run --host=0.0.0.0 --port=5001 &
 
 clear_venv:
 	@rm -rf venv
