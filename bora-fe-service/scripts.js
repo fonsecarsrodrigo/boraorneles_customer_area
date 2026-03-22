@@ -1,5 +1,5 @@
 // Base URL for all backend requests
-const API_BASE_URL = 'http://0.0.0.0:5001';
+const API_BASE_URL = 'http://0.0.0.0:5000';
 
 // ViaCEP — same flow as https://viacep.com.br/exemplo/javascript/ (JSON via fetch instead of JSONP)
 const VIACEP_WS = 'https://viacep.com.br/ws';

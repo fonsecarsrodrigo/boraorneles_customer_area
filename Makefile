@@ -1,16 +1,20 @@
 .PHONY: run clear seed clear_venv create_venv activate_venv deactivate_venv delete_venv install_dependencies ruff docker-fe-build docker-fe-run
 
-# Frontend (nginx): build image, then run with host port 8080 -> container 80
+BE_DIR := bora-be-service
+FE_DIR := bora-fe-service
+
+# Frontend (nginx in bora-fe-service): build context must be FE_DIR so COPY paths resolve
 docker-fe-build:
-	docker build -f bora-fe.docker -t bora-fe .
+	docker build -f $(FE_DIR)/bora-fe.docker -t bora-fe $(FE_DIR)
 
 docker-fe-run:
-	docker run --rm -p 8080:80 -p 5001:5001 bora-fe
+	docker run --rm -p 8080:80 bora-fe
 
+# Backend (Flask in bora-be-service)
 run :
-	@export FLASK_APP=customer_area.py && \
+	@cd $(BE_DIR) && export FLASK_APP=customer_area.py && \
 	export FLASK_ENV=development && \
-	flask run --host=0.0.0.0 --port=5001 &
+	flask run &
 
 clear_venv:
 	@rm -rf venv
@@ -32,10 +36,10 @@ install_dependencies:
 
 clear:
 	@pkill -f flask || true
-	@rm -rf database
+	@rm -rf $(BE_DIR)/database
 
 seed:
-	@python3 scripts/seed_database.py
+	@python3 $(BE_DIR)/scripts/seed_database.py
 
 ruff:
 	@ruff check .
