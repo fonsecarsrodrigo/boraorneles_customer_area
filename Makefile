@@ -1,4 +1,4 @@
-.PHONY: run clear seed clear_venv create_venv activate_venv deactivate_venv delete_venv install_dependencies ruff docker-fe-build docker-fe-run
+.PHONY: run clear seed clear_venv create_venv activate_venv deactivate_venv delete_venv install_dependencies ruff docker-fe-build docker-fe-run docker-be-build docker-be-run
 
 BE_DIR := bora-be-service
 FE_DIR := bora-fe-service
@@ -10,11 +10,18 @@ docker-fe-build:
 docker-fe-run:
 	docker run --rm -p 8080:80 bora-fe
 
+# Backend (Flask): context is repo root so requirements.txt + bora-be-service/ are available
+docker-be-build:
+	docker build -f $(BE_DIR)/bora-be.docker -t bora-be .
+
+docker-be-run:
+	docker run --rm -p 5001:5001 bora-be
+
 # Backend (Flask in bora-be-service)
 run :
 	@cd $(BE_DIR) && export FLASK_APP=customer_area.py && \
 	export FLASK_ENV=development && \
-	flask run &
+	flask run --port=5001 &
 
 clear_venv:
 	@rm -rf venv

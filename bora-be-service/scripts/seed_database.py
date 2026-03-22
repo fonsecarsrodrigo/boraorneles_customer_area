@@ -1,17 +1,15 @@
-"""Utility to seed travel plans and customers into the local database."""
+"""Seed travel plans and customers via the running HTTP API (add_customer / add_travel_plan)."""
 
+from __future__ import annotations
+
+import json
+import os
 from datetime import date
-from pathlib import Path
-import sys
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
-# Ensure project root is on sys.path so database_model can be imported.
-ROOT_DIR = Path(__file__).resolve().parent.parent
-if str(ROOT_DIR) not in sys.path:
-    sys.path.insert(0, str(ROOT_DIR))
-
-from database_model import Session  # noqa: E402
-from database_model.Customer import Customer  # noqa: E402
-from database_model.TravelPlan import TravelPlan  # noqa: E402
+# Default matches `make run` / `flask run --port=5001`
+DEFAULT_API_BASE = "http://0.0.0.0:5001"
 
 
 TRAVEL_PLANS = [
@@ -182,54 +180,75 @@ CUSTOMERS_DATA = [
 ]
 
 
-def seed_database():
-    """Create travel plans and customers inside a single transaction."""
-    session = Session()
+def _json_payload(obj: object) -> object:
+    """Convert date values to ISO strings for JSON."""
+    if isinstance(obj, date):
+        return obj.isoformat()
+    if isinstance(obj, dict):
+        return {k: _json_payload(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_json_payload(x) for x in obj]
+    return obj
+
+
+def _post_json(base_url: str, path: str, payload: dict) -> dict:
+    url = f"{base_url.rstrip('/')}{path}"
+    body = json.dumps(_json_payload(payload)).encode("utf-8")
+    req = Request(
+        url,
+        data=body,
+        method="POST",
+        headers={"Content-Type": "application/json"},
+    )
     try:
-        customers = {}
-        for idx, data in enumerate(CUSTOMERS_DATA, start=1):
-            payload = data.copy()
-            customer = Customer(**payload)
-            session.add(customer)
-            session.flush()
-            customers[idx] = customer.customer_key
+        with urlopen(req, timeout=120) as resp:
+            raw = resp.read().decode()
+            return json.loads(raw) if raw else {}
+    except HTTPError as e:
+        err_body = e.read().decode() if e.fp else ""
+        try:
+            detail = json.loads(err_body) if err_body else {}
+        except json.JSONDecodeError:
+            detail = {"message": err_body}
+        msg = detail.get("message", detail) if isinstance(detail, dict) else detail
+        raise RuntimeError(f"{path} failed (HTTP {e.code}): {msg}") from e
+    except URLError as e:
+        raise RuntimeError(
+            f"Could not reach API at {base_url}. Start the server (e.g. `make run`). "
+            f"Underlying error: {e}"
+        ) from e
 
-        travel_plan_entries = []
-        for plan in TRAVEL_PLANS:
-            target_index = plan["target_customer_index"]
-            customer_key = customers.get(target_index)
-            if not customer_key:
-                raise ValueError(
-                    f"No customer seeded for travel plan target index {target_index}"
-                )
-            travel_plan = TravelPlan(
-                start_date=plan["start_date"],
-                end_date=plan["end_date"],
-                travel_purpose=plan["travel_purpose"],
-                destination=plan["destination"],
-                origin=plan["origin"],
-                customer_id=customer_key,
-            )
-            session.add(travel_plan)
-            session.flush()
-            travel_plan_entries.append((customer_key, travel_plan.travel_plan_key))
 
-        for customer_key, travel_plan_key in travel_plan_entries:
-            session.query(Customer).filter(
-                Customer.customer_key == customer_key
-            ).update({"travel_plan_id": travel_plan_key})
+def seed_database(api_base: str | None = None) -> None:
+    """POST customers then travel plans; `/add_travel_plan` links each plan to its customer."""
+    base = (api_base or os.environ.get("SEED_API_BASE", DEFAULT_API_BASE)).rstrip("/")
 
-        session.commit()
-        print(
-            f"Inserted {len(travel_plan_entries)} travel plans and "
+    customers_by_index: dict[int, int] = {}
+    for idx, data in enumerate(CUSTOMERS_DATA, start=1):
+        out = _post_json(base, "/add_customer", dict(data))
+        customers_by_index[idx] = int(out["customer_key"])
 
-            f"{len(CUSTOMERS_DATA)} customers."
+    for plan in TRAVEL_PLANS:
+        target = plan["target_customer_index"]
+        customer_id = customers_by_index.get(target)
+        if customer_id is None:
+            raise ValueError(f"No customer for travel plan target index {target}")
+        _post_json(
+            base,
+            "/add_travel_plan",
+            {
+                "start_date": plan["start_date"],
+                "end_date": plan["end_date"],
+                "travel_purpose": plan["travel_purpose"],
+                "destination": plan["destination"],
+                "origin": plan["origin"],
+                "customer_id": customer_id,
+            },
         )
-    except Exception as exc:
-        session.rollback()
-        raise RuntimeError("Failed to seed travel plans and customers") from exc
-    finally:
-        session.close()
+
+    print(
+        f"Inserted {len(TRAVEL_PLANS)} travel plans and {len(CUSTOMERS_DATA)} customers via {base}."
+    )
 
 
 if __name__ == "__main__":
