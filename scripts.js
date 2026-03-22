@@ -1,6 +1,89 @@
 // Base URL for all backend requests
 const API_BASE_URL = 'http://127.0.0.1:5000';
 
+// ViaCEP — same flow as https://viacep.com.br/exemplo/javascript/ (JSON via fetch instead of JSONP)
+const VIACEP_WS = 'https://viacep.com.br/ws';
+
+const clearAddressAutofill = (form) => {
+  const street = form.querySelector('[name="home_street"]');
+  const city = form.querySelector('[name="home_city"]');
+  const state = form.querySelector('[name="home_state"]');
+  if (street) street.value = '';
+  if (city) city.value = '';
+  if (state) state.value = '';
+};
+
+const fillFromViaCep = (conteudo, form, cepInput) => {
+  if (conteudo.erro) {
+    clearAddressAutofill(form);
+    window.alert('CEP não encontrado.');
+    return;
+  }
+  const street = form.querySelector('[name="home_street"]');
+  const city = form.querySelector('[name="home_city"]');
+  const state = form.querySelector('[name="home_state"]');
+  if (cepInput && conteudo.cep) {
+    cepInput.value = conteudo.cep;
+  }
+  if (street) {
+    street.value = conteudo.logradouro ?? '';
+  }
+  if (city) {
+    city.value = conteudo.localidade ?? '';
+  }
+  if (state) {
+    state.value = conteudo.uf ?? '';
+  }
+};
+
+const pesquisacep = async (valor, form) => {
+  const cepInput = form.querySelector('[name="home_cep"]');
+  const cep = String(valor ?? '').replace(/\D/g, '');
+
+  if (cep !== '') {
+    const validacep = /^[0-9]{8}$/;
+    if (validacep.test(cep)) {
+      const street = form.querySelector('[name="home_street"]');
+      const city = form.querySelector('[name="home_city"]');
+      const state = form.querySelector('[name="home_state"]');
+      if (street) street.value = '...';
+      if (city) city.value = '...';
+      if (state) state.value = '...';
+
+      try {
+        const url = `${VIACEP_WS}/${cep}/json/`;
+        const response = await fetch(url, {
+          headers: { Accept: 'application/json' },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const conteudo = await response.json();
+        fillFromViaCep(conteudo, form, cepInput);
+      } catch (err) {
+        console.error('ViaCEP:', err);
+        clearAddressAutofill(form);
+        window.alert('Não foi possível consultar o CEP.');
+      }
+    } else {
+      clearAddressAutofill(form);
+      window.alert('Formato de CEP inválido.');
+    }
+  } else {
+    clearAddressAutofill(form);
+  }
+};
+
+const setupViaCepAutofill = (form) => {
+  const cepInput = form.querySelector('[name="home_cep"]');
+  if (!cepInput) {
+    return;
+  }
+  cepInput.addEventListener('blur', () => {
+    void pesquisacep(cepInput.value, form);
+  });
+};
+
 // Add a single customer row in the table
 const insertCustomerRow = ({ customer_key, full_name, social_number, date_of_birth, e_mail, home_cep, home_street, home_number, home_city, home_state, travel_plan_id }) => {
   const table = document.getElementById('CustomersTable');
@@ -245,6 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('customerForm');
   if (form) {
     form.addEventListener('submit', addCustomer);
+    setupViaCepAutofill(form);
   }
 
   TP_form = document.getElementById('travelPlanForm')
