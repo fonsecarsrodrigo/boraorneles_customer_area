@@ -1,4 +1,7 @@
-"""Seed travel plans and customers via the running HTTP API (add_customer / add_travel_plan)."""
+"""Seed travel plans and customers via the running HTTP API (add_customer / add_travel_plan).
+
+POST bodies use application/x-www-form-urlencoded to match flask_openapi3 `form:` validation.
+"""
 
 from __future__ import annotations
 
@@ -6,6 +9,7 @@ import json
 import os
 from datetime import date
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 # Default matches `make run` / `flask run --port=5001`
@@ -180,25 +184,27 @@ CUSTOMERS_DATA = [
 ]
 
 
-def _json_payload(obj: object) -> object:
-    """Convert date values to ISO strings for JSON."""
-    if isinstance(obj, date):
-        return obj.isoformat()
-    if isinstance(obj, dict):
-        return {k: _json_payload(v) for k, v in obj.items()}
-    if isinstance(obj, list):
-        return [_json_payload(x) for x in obj]
-    return obj
+def _form_body(payload: dict) -> bytes:
+    """Build x-www-form-urlencoded body; matches flask_openapi3 `form:` parsing (not JSON)."""
+    pairs: list[tuple[str, str]] = []
+    for key, value in payload.items():
+        if value is None:
+            continue
+        if isinstance(value, date):
+            pairs.append((key, value.isoformat()))
+        else:
+            pairs.append((key, str(value)))
+    return urlencode(pairs).encode("utf-8")
 
 
-def _post_json(base_url: str, path: str, payload: dict) -> dict:
+def _post_form(base_url: str, path: str, payload: dict) -> dict:
     url = f"{base_url.rstrip('/')}{path}"
-    body = json.dumps(_json_payload(payload)).encode("utf-8")
+    body = _form_body(payload)
     req = Request(
         url,
         data=body,
         method="POST",
-        headers={"Content-Type": "application/json"},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     try:
         with urlopen(req, timeout=120) as resp:
@@ -225,7 +231,7 @@ def seed_database(api_base: str | None = None) -> None:
 
     customers_by_index: dict[int, int] = {}
     for idx, data in enumerate(CUSTOMERS_DATA, start=1):
-        out = _post_json(base, "/add_customer", dict(data))
+        out = _post_form(base, "/add_customer", dict(data))
         customers_by_index[idx] = int(out["customer_key"])
 
     for plan in TRAVEL_PLANS:
@@ -233,7 +239,7 @@ def seed_database(api_base: str | None = None) -> None:
         customer_id = customers_by_index.get(target)
         if customer_id is None:
             raise ValueError(f"No customer for travel plan target index {target}")
-        _post_json(
+        _post_form(
             base,
             "/add_travel_plan",
             {

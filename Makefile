@@ -1,4 +1,4 @@
-.PHONY: run clear seed clear_venv create_venv activate_venv deactivate_venv delete_venv install_dependencies ruff docker-fe-build docker-fe-run docker-be-build docker-be-run
+.PHONY: run clear seed clear_venv create_venv activate_venv deactivate_venv delete_venv install_dependencies ruff docker-fe-build docker-fe-run docker-be-build docker-be-run docker-stop
 
 BE_DIR := bora-be-service
 FE_DIR := bora-fe-service
@@ -16,6 +16,10 @@ docker-be-build:
 
 docker-be-run:
 	docker run --rm -p 5001:5001 bora-be
+
+# Stop every running container (no-op if none are running)
+docker-stop:
+	@ids=$$(docker ps -q); [ -n "$$ids" ] && docker stop $$ids || true
 
 # Backend (Flask in bora-be-service)
 run :
