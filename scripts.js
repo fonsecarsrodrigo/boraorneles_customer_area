@@ -2,7 +2,7 @@
 const API_BASE_URL = 'http://127.0.0.1:5000';
 
 // Add a single customer row in the table
-const insertCustomerRow = ({ customer_key, full_name, social_number, date_of_birth, e_mail, home_adress, travel_plan_id }) => {
+const insertCustomerRow = ({ customer_key, full_name, social_number, date_of_birth, e_mail, home_cep, home_street, home_number, home_city, home_state, travel_plan_id }) => {
   const table = document.getElementById('CustomersTable');
   if (!table) {
     return;
@@ -13,9 +13,13 @@ const insertCustomerRow = ({ customer_key, full_name, social_number, date_of_bir
   row.insertCell(2).textContent = social_number ?? '';
   row.insertCell(3).textContent = date_of_birth
   row.insertCell(4).textContent = e_mail ?? '';
-  row.insertCell(5).textContent = home_adress ?? '';
-  row.insertCell(6).textContent = travel_plan_id ?? '';
-  const Customer_delete_cell = row.insertCell(7);
+  row.insertCell(5).textContent = home_cep ?? '';
+  row.insertCell(6).textContent = home_street ?? '';
+  row.insertCell(7).textContent = home_number ?? '';
+  row.insertCell(8).textContent = home_city ?? '';
+  row.insertCell(9).textContent = home_state ?? '';
+  row.insertCell(10).textContent = travel_plan_id ?? '';
+  const Customer_delete_cell = row.insertCell(11);
   const Customer_delete_btn = document.createElement('img');
   Customer_delete_btn.src = 'images/trash-can.png';
   Customer_delete_btn.alt = 'Delete';
@@ -175,7 +179,11 @@ const addCustomer = (event) => {
     full_name: formData.get('full_name'),
     e_mail: formData.get('e_mail'),
     date_of_birth: formData.get('date_of_birth').toString(),
-    home_adress: formData.get('home_adress') || '',
+    home_cep: formData.get('home_cep') || '',
+    home_street: formData.get('home_street') || '',
+    home_number: formData.get('home_number') || '',
+    home_city: formData.get('home_city') || '',
+    home_state: formData.get('home_state') || '',
     social_number: formData.get('social_number'),
     travel_plan_id: null,
   };

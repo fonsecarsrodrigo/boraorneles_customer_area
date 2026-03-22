@@ -58,14 +58,18 @@ def add_customer(form: CustomerSchema):
             full_name=form.full_name,
             date_of_birth=form.date_of_birth,
             e_mail=form.e_mail,
-            home_adress=form.home_adress,
+            home_cep=form.home_cep,
+            home_street=form.home_street,
+            home_number=form.home_number,
+            home_city=form.home_city,
+            home_state=form.home_state,
             social_number=form.social_number,
             travel_plan_id=form.travel_plan_id,
         )
         session.add(customer)
         session.commit()
         session.refresh(customer)
-    except Exception as e:
+    except Exception:
         session.rollback()
         return {"message": "Failed to Add Customer to Database"}, 400
 
@@ -78,7 +82,7 @@ def get_customers():
     try:
         session = Session()
         customers = session.query(Customer).all()
-    except Exception as e:
+    except Exception:
         return {"message": "Failed to retrieve customers from database"}, 400
 
     return show_customers_list(customers), 200
@@ -131,7 +135,7 @@ def delete_customer(query: CustomerKeySchema):
     try:
         session.delete(customer)
         session.commit()
-    except Exception as e:
+    except Exception:
         session.rollback()
         return {"message": "Failed to delete customer from database"}, 400
 
@@ -174,7 +178,7 @@ def add_travel_plan(form: TravelPlanSchema):
 
         customer.travel_plan_id = travel_plan.travel_plan_key
         session.commit()
-    except Exception as e:
+    except Exception:
         session.rollback()
         return {"message": "Failed to Add Travel Plan to Database"}, 400
 
@@ -191,7 +195,7 @@ def get_travel_plans():
     session = Session()
     try:
         travel_plans = session.query(TravelPlan).all()
-    except Exception as e:
+    except Exception:
         return {"message": "Failed to retrieve travel plans from database"}, 400
 
     return show_travel_plans_list(travel_plans), 200
@@ -243,7 +247,7 @@ def delete_travel_plan(query: TravelPlanKeySchema):
         session.delete(travel_plan)
         customer.travel_plan_id = None
         session.commit()
-    except Exception as e:
+    except Exception:
         session.rollback()
         return {"message": "Failed to delete travel plan from database"}, 400
 

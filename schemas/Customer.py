@@ -12,7 +12,11 @@ class CustomerSchema(BaseModel):
     full_name: str
     date_of_birth: date
     e_mail: str
-    home_adress: Optional[str] = None
+    home_cep: str
+    home_street: str
+    home_number: str
+    home_city: str
+    home_state: str
     social_number: str
     travel_plan_id: Optional[int] = None
 
@@ -24,7 +28,11 @@ class CustomerViewSchema(BaseModel):
     date_of_birth = date
     e_mail = str
     customer_since = datetime
-    home_adress = str
+    home_cep = str
+    home_street = str
+    home_number = str
+    home_city = str
+    home_state = str
     social_number = str
     travel_plan_id: Optional[int] = None
 
@@ -48,7 +56,11 @@ def show_customer_view(customer: Customer):
         "date_of_birth": customer.date_of_birth.isoformat(),
         "e_mail": customer.e_mail,
         "customer_since": customer.customer_since.isoformat(),
-        "home_adress": customer.home_adress,
+        "home_cep": customer.home_cep,
+        "home_street": customer.home_street,
+        "home_number": customer.home_number,
+        "home_city": customer.home_city,
+        "home_state": customer.home_state,
         "social_number": customer.social_number,
         "travel_plan_id": customer.travel_plan_id,
     }

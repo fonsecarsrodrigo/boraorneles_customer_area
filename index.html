@@ -48,10 +48,15 @@
                     Email *
                     <input type="email" name="e_mail" required>
                 </label>
-
+            </div>
+            <div class="div-3-columns">
                 <label>
                     Endereço Residencial *
-                    <input type="text" name="home_adress">
+                    <input type="text" name="home_cep" placeholder="CEP" required>
+                    <input type="text" name="home_street" placeholder="Rua" required>
+                    <input type="text" name="home_number" placeholder="Número" required>
+                    <input type="text" name="home_city" placeholder="Cidade" required>
+                    <input type="text" name="home_state" placeholder="Estado (UF)" required maxlength="2">
                 </label>
             </div>
 
@@ -72,7 +77,11 @@
                 <th>CPF</th>
                 <th>Data de Nascimento</th>
                 <th>Email</th>
-                <th>Endereço</th>
+                <th>CEP</th>
+                <th>Rua</th>
+                <th>Número</th>
+                <th>Cidade</th>
+                <th>Estado</th>
                 <th>Identificador Plano de Viagem</th>
                 <th>Ação</th>
             </tr>
