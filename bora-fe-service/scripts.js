@@ -38,9 +38,12 @@ const fillFromViaCep = (conteudo, form, cepInput) => {
 
 const pesquisacep = async (valor, form) => {
   const cepInput = form.querySelector('[name="home_cep"]');
+
+  // replace all non-digits with an empty string
   const cep = String(valor ?? '').replace(/\D/g, '');
 
   if (cep !== '') {
+    // check if the cep is 8 digits long
     const validacep = /^[0-9]{8}$/;
     if (validacep.test(cep)) {
       const street = form.querySelector('[name="home_street"]');
@@ -79,6 +82,7 @@ const setupViaCepAutofill = (form) => {
   if (!cepInput) {
     return;
   }
+  // blur is triggered when the input loses focus
   cepInput.addEventListener('blur', () => {
     void pesquisacep(cepInput.value, form);
   });
@@ -117,6 +121,7 @@ const insertCustomerRow = ({ customer_key, full_name, social_number, date_of_bir
 async function insertTravelPlanRow ({ travel_plan_key, customer_id, origin, destination, start_date, end_date, travel_purpose }) {
   const table = document.getElementById('TravelPlansTable');
   if (!table) {
+    console.error('TravelPlansTable not found');
     return;
   }
 
@@ -167,13 +172,13 @@ const deleteTravelPlan = (travel_plan_key) => {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+        throw new Error(`ROUTE /delete_travel_plan request failed with status ${response.status}`);
       }
-      console.info('ROUTE: /delete_travel_plan response ok');
+      console.info('ROUTE /delete_travel_plan response OK');
       return response.json();
     })
     .then((data) => {
-      console.info('ROUTE: /delete_travel_plan data received', data);
+      console.info('ROUTE /delete_travel_plan received data:', data);
       alert('Travel plan deleted successfully.');
       location.reload();
     })
@@ -190,13 +195,13 @@ const deleteCustomer = (customer_key) => {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+        throw new Error(`ROUTE /delete_customer request failed with status ${response.status}`);
       }
-      console.info('ROUTE: /delete_customer response ok');
+      console.info('ROUTE /delete_customer response OK');
       return response.json();
     })
     .then((data) => {
-      console.info('ROUTE: /delete_customer data received', data);
+      console.info('ROUTE /delete_customer received data:', data);
       alert('Customer deleted successfully.');
       location.reload();
     })
@@ -211,7 +216,7 @@ const showCustomers = () => {
   fetch(url, { method: 'get' })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+        throw new Error(`ROUTE /get_customers request failed with status ${response.status}`);
       }
       console.info('ROUTE: /get_customers response ok');
       return response.json();
@@ -226,6 +231,7 @@ const showCustomers = () => {
     })
     .catch((error) => {
       console.error('ROUTE: /get_customers failed with error:', error);
+      alert(error.message);
     });
 };
 
@@ -235,21 +241,21 @@ const showTravelPlans = () => {
   fetch(url, { method: 'get' })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+        throw new Error(`ROUTE /get_travel_plans request failed with status ${response.status}`);
       }
-      console.info('ROUTE: /get_travel_plans response ok');
+      console.info('ROUTE /get_travel_plans response OK');
       return response.json();
     })
     .then((data) => {
       if (!data.travel_plans) {
-        console.info('ROUTE: /get_travel_plans no travel plans found');
+        console.info('ROUTE /get_travel_plans no travel plans found');
         return;
       }
-      console.info('ROUTE: /get_travel_plans data received', data);
+      console.info('ROUTE /get_travel_plans received data:', data);
       data.travel_plans.forEach(insertTravelPlanRow);
     })
     .catch((error) => {
-      console.error('ROUTE: /get_travel_plans failed with error:', error);
+      console.error('ROUTE /get_travel_plans failed with error:', error);
     });
 };
 
@@ -277,16 +283,17 @@ const addCustomer = (event) => {
     })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+        throw new Error(`ROUTE /add_customer request failed with status ${response.status}`);
       }
-      response.json()
+      console.info('ROUTE /add_customer response OK')
+      return response.json()
     })
     .then((data) => {
-      console.info('ROUTE: add_customer response ok', data)
+      console.info('ROUTE /add_customer received data:', data)
       location.reload();
     })
     .catch((error) => {
-      console.error('ROUTE: add_customer failed with error:', error);
+      console.error('ROUTE /add_customer failed with error:', error);
     });
 };
 
@@ -310,30 +317,37 @@ const addTravelPlan = (event) => {
     })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+        throw new Error(`ROUTE /add_travel_plan request failed with status ${response.status}`);
       }
-      response.json()
+      console.info('ROUTE add_travel_plan response OK')
+      return response.json()
     })
     .then((data) => {
-      console.info('ROUTE: add_travel_plan response ok', data)
+
+      console.info('ROUTE add_travel_plan data received:', data)
       location.reload();
     })
     .catch((error) => {
-      console.error('ROUTE: add_travel_plan failed with error:', error);
+      console.error('ROUTE add_travel_plan failed with error:', error);
     });
 };
 
-// Wire up forms and fetch initial data when the page loads
+
+//DOMContentLoaded event listener
+// DOMContentLoaded is a event listener that is triggered
+// when the html page and all its resources are fully loaded and parsed.
+
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('customerForm');
-  if (form) {
-    form.addEventListener('submit', addCustomer);
+  console.log('DOMContentLoaded');
+  customerForm = document.getElementById('customerForm');
+  if (customerForm) {
+    customerForm.addEventListener('submit', addCustomer);
     setupViaCepAutofill(form);
   }
 
-  TP_form = document.getElementById('travelPlanForm')
-  if (TP_form) {
-    TP_form.addEventListener('submit', addTravelPlan);
+  travelPlanForm = document.getElementById('travelPlanForm')
+  if (travelPlanForm) {
+    travelPlanForm.addEventListener('submit', addTravelPlan);
   }
   showCustomers();
   showTravelPlans();

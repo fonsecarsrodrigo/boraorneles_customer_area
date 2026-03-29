@@ -33,11 +33,14 @@ clear_venv:
 create_venv:
 	@python3 -m venv venv
 
+# Make runs recipes in a subshell.
+# ctivating a venv here cannot affect your terminal.
+# Run the printed command yourself in bash/zsh.
 activate_venv:
-	source venv/bin/activate
+	@echo "source $(CURDIR)/venv/bin/activate"
 
 deactivate_venv:
-	deactivate
+	@echo "Run \`deactivate\` in the shell where the venv is active (not via make)."
 
 delete_venv:
 	@rm -rf venv
