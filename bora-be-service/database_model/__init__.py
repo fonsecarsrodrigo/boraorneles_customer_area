@@ -13,7 +13,7 @@ from database_model.base import Base
 from database_model.Customer import Customer
 from database_model.TravelPlan import TravelPlan
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
+ROOT_DIR = Path(__file__).resolve().parent
 db_path = ROOT_DIR / "database"
 # Ensure the database directory exists
 db_path.mkdir(parents=True, exist_ok=True)

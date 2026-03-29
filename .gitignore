@@ -1,4 +1,4 @@
 
 # Ignore virtual environment folder
 venv/
-database/
+bora-be-service/database/*.sqlite3

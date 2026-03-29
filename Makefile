@@ -15,7 +15,7 @@ docker-be-build:
 	docker build -f $(BE_DIR)/bora-be.docker -t bora-be .
 
 docker-be-run:
-	docker run --rm -p 5001:5001 bora-be
+	docker run --rm -p 5001:5001 -v ./bora-be-service/database:/app/database bora-be
 
 # Stop every running container (no-op if none are running)
 docker-stop:
@@ -50,7 +50,7 @@ install_dependencies:
 
 clear:
 	@pkill -f flask || true
-	@rm -rf $(BE_DIR)/database
+	@rm -rf $(BE_DIR)/database/*.sqlite3
 
 seed:
 	@python3 $(BE_DIR)/scripts/seed_database.py
