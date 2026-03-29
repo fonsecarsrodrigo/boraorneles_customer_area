@@ -15,7 +15,7 @@ docker-be-build:
 	docker build -f $(BE_DIR)/bora-be.docker -t bora-be .
 
 docker-be-run:
-	docker run --rm -p 5001:5001 -v ./bora-be-service/database:/app/database bora-be
+	docker run --rm -p 5001:5001 -v ./bora-be-service/database_model/database:/app/database_model/database bora-be &
 
 # Stop every running container (no-op if none are running)
 docker-stop:
